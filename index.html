@@ -5,7 +5,16 @@
 	<title>myFortysix</title>
 </head>
 <body>
-	
+
+	<div>
+		<button onclick="view.displayHighPeaksByName()">Sort By Name</button>
+		<button onclick="view.displayHighPeaksByElevationHigh()">Sort By Elevation High - Low</button>
+		<button onclick="view.displayHighPeaksByElevationLow()">Sort By Elevation Low - High</button>
+	</div>
+
+	<ul id="list-of-high-peaks">
+
+	</ul>
 	<script type="text/javascript" src="scripts/script.js"></script>
 </body>
 </html>
