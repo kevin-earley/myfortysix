@@ -9,11 +9,11 @@ class HighPeak {
   }
 }
 
+let highPeaksList = [];
 const createHighPeak = (name, elevation) => {
 	highPeaksList[highPeaksList.length] = new HighPeak(name, elevation);
 }
 
-let highPeaksList = [];
 createHighPeak('Mt. Marcy', 5344);
 createHighPeak('Algonquin Peak', 5114);
 createHighPeak('Mt. Haystack', 4960);
