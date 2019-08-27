@@ -1,56 +1,41 @@
-const highPeaksList = [
-  {
-    name: "Mt. Marcy",
-    elevation: 5344,
-    completed: false
-  },
-  {
-    name: "Algonquin Peak",
-    elevation: 5114,
-    completed: false
-  },
-  {
-    name: "Mt. Haystack",
-    elevation: 4960,
-    completed: false
-  },
-  {
-    name: "Mt. Skylight",
-    elevation: 4926,
-    completed: false
-  },
-  {
-    name: "Whiteface Mountain",
-    elevation: 4867,
-    completed: false
-  },
-  {
-    name: "Dix Mountain",
-    elevation: 4857,
-    completed: false
-  },
-  {
-    name: "Gray Peak",
-    elevation: 4840,
-    completed: false
+class HighPeak {
+  constructor(name, elevation) {
+    this._name = name;
+    this._elevation = elevation;
+    this._status = {
+      isComplete: false,
+      dateOfCompletion: ''
+    }
   }
-];
+}
+
+const createHighPeak = (name, elevation) => {
+	highPeaksList[highPeaksList.length] = new HighPeak(name, elevation);
+}
+
+let highPeaksList = [];
+createHighPeak('Mt. Marcy', 5344);
+createHighPeak('Algonquin Peak', 5114);
+createHighPeak('Mt. Haystack', 4960);
+createHighPeak('Mt. Skylight', 4926);
+createHighPeak('Whiteface Mountain', 4867);
+createHighPeak('Dix Mountain', 4857);
 
 const handlers = {
   sortByName: ( a, b ) => {
-    if (a.name < b.name) {
+    if (a._name < b._name) {
       return -1;
     }
-    if (a.name > b.name) {
+    if (a._name > b._name) {
       return 1;
     }
     return 0;
   },
   sortByElevationHigh: ( a, b ) => {
-    return b.elevation - a.elevation;
+    return b._elevation - a._elevation;
   },
   sortByElevationLow: ( a, b ) => {
-    return a.elevation - b.elevation;
+    return a._elevation - b._elevation;
   }
 }
 
@@ -73,7 +58,7 @@ const view = {
 
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
-      mtnLi.textContent = "( ) " + mtn.name + " - " + mtn.elevation;
+      mtnLi.textContent = "( ) " + mtn._name + " - " + mtn._elevation;
       highPeaksUl.appendChild(mtnLi);
     })
   }
