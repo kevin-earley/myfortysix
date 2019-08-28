@@ -6,19 +6,12 @@
 </head>
 <body>
 
-	<p style="display: inline">Sort by:</p>
-
+	<p id="sort-by-label">Sort by:</p>
 	<select id="sort-by-select">
 		<option value="byName">Name</option>
-		<option value="byHigh">High-Low</option>
+		<option value="byHigh" selected="selected">High-Low</option>
 		<option value="byLow">Low-High</option>
 	</select>
-
-	<!-- <div>
-		<button onclick="view.displayHighPeaksByName()">Name</button>
-		<button onclick="view.displayHighPeaksByElevationHigh()">High - Low</button>
-		<button onclick="view.displayHighPeaksByElevationLow()">Low - High</button>
-	</div> -->
 
 	<ul id="list-of-high-peaks">
 	</ul>
