@@ -51,14 +51,13 @@ const handlers = {
 
 const view = {
   displayHighPeaks: (sortOption) => {
-    highPeaksList.sort( handlers.sort[sortOption] );
-
     const highPeaksUl = document.querySelector('ul#list-of-high-peaks');
     highPeaksUl.innerHTML = '';
 
+    highPeaksList.sort( handlers.sort[sortOption] );
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
-      mtnLi.textContent = "( ) " + mtn._name + " - " + mtn._elevation +"'";
+      mtnLi.textContent = "( ) " + mtn._name + " - " + mtn._elevation + "'";
       highPeaksUl.appendChild(mtnLi);
     })
   },
