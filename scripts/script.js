@@ -1,4 +1,5 @@
 const sortSelect = document.querySelector("select#sort-by-select");
+const highPeaksUl = document.querySelector('ul#list-of-high-peaks');
 let highPeaksList = [];
 
 class HighPeak {
@@ -51,9 +52,7 @@ const handlers = {
 
 const view = {
   displayHighPeaks: (sortOption) => {
-    const highPeaksUl = document.querySelector('ul#list-of-high-peaks');
     highPeaksUl.innerHTML = '';
-
     highPeaksList.sort( handlers.sort[sortOption] );
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
