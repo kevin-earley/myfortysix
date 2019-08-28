@@ -51,13 +51,7 @@ const handlers = {
 
 const view = {
   displayHighPeaks: (sortOption) => {
-    if (sortOption === 'byName') {
-      highPeaksList.sort( handlers.sort.byName );
-    } else if (sortOption === 'byHigh') {
-      highPeaksList.sort( handlers.sort.byHigh );
-    } else if (sortOption === 'byLow') {
-      highPeaksList.sort( handlers.sort.byLow );
-    }
+    highPeaksList.sort( handlers.sort[sortOption] );
 
     const highPeaksUl = document.querySelector('ul#list-of-high-peaks');
     highPeaksUl.innerHTML = '';
