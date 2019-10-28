@@ -15,6 +15,9 @@ body {
   font-weight: 400;
   padding: 3rem;
   box-sizing: border-box;
+
+  font-size: 1.5rem;
+  line-height: 2.5rem;
 }
 
 p#sort-by-label {

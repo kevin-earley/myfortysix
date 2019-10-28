@@ -56,6 +56,7 @@ const view = {
     highPeaksList.sort( handlers.sort[sortOption] );
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
+      mtnLi.className = "high-peak"
       mtnLi.textContent = "( ) " + mtn._name + " - " + mtn._elevation + "'";
       highPeaksUl.appendChild(mtnLi);
     })
@@ -63,7 +64,14 @@ const view = {
   createEventListeners: () => {
     sortSelect.addEventListener("change", () =>{
       view.displayHighPeaks(sortSelect.value);
+    }),
+
+    document.querySelectorAll("li.high-peak").forEach(highPeakLi => {
+      highPeakLi.addEventListener("click", () => {
+        console.log(this)
+      })
     })
+
   }
 }
 
