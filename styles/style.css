@@ -17,7 +17,6 @@ body {
   box-sizing: border-box;
 
   font-size: 1.5rem;
-  line-height: 2.5rem;
 }
 
 p#sort-by-label {
@@ -26,4 +25,9 @@ p#sort-by-label {
 
 ul#list-of-high-peaks {
   list-style-type: none;
+}
+
+ul#list-of-high-peaks li {
+  padding: .5rem 0;
+  margin: .5rem 0;
 }

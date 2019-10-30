@@ -7,8 +7,7 @@ class HighPeak {
     this._name = name;
     this._elevation = elevation;
     this._status = {
-      isComplete: false,
-      dateOfCompletion: ''
+      completed: false
     }
   }
 }
@@ -23,12 +22,12 @@ createHighPeak('Mount Haystack', 4960);
 createHighPeak('Mount Skylight', 4926);
 createHighPeak('Whiteface Mountain', 4867);
 createHighPeak('Dix Mountain', 4857);
-createHighPeak('Gray Peak', 4840);
-createHighPeak('Iroquois Peak', 4840);
-createHighPeak('Basin Mountain', 4827);
-createHighPeak('Gothics Mountain', 4736);
-createHighPeak('Mount Colden', 4714);
-createHighPeak('Giant Mountain', 4627);
+// createHighPeak('Gray Peak', 4840);
+// createHighPeak('Iroquois Peak', 4840);
+// createHighPeak('Basin Mountain', 4827);
+// createHighPeak('Gothics Mountain', 4736);
+// createHighPeak('Mount Colden', 4714);
+// createHighPeak('Giant Mountain', 4627);
 
 const handlers = {
   sort: {
@@ -47,6 +46,15 @@ const handlers = {
     byLow: ( a, b ) => {
       return a._elevation - b._elevation;
     }
+  },
+  toggleCompleted: (highPeakId) => {
+    highPeaksList.forEach((highPeak) => {
+      if ( highPeak._name.toLowerCase().replace(/ /g,"-") === highPeakId ) {
+        return highPeak._status.completed = !highPeak._status.completed
+      };
+    })
+    view.displayHighPeaks();
+    view.setupEventListeners();
   }
 }
 
@@ -56,24 +64,24 @@ const view = {
     highPeaksList.sort( handlers.sort[sortOption] );
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
-      mtnLi.className = "high-peak"
-      mtnLi.textContent = "( ) " + mtn._name + " - " + mtn._elevation + "'";
+      mtnLi.id = mtn._name.toLowerCase().replace(/ /g,"-");
+      mtnLi.textContent = mtn._name + " - " + mtn._elevation + "' - Completed: " + mtn._status.completed;
+      mtnLi.textContent = mtn._name + " - " + mtn._elevation + "' - Completed: " + mtn._status.completed;
       highPeaksUl.appendChild(mtnLi);
     })
   },
-  createEventListeners: () => {
+  setupEventListeners: () => {
     sortSelect.addEventListener("change", () =>{
       view.displayHighPeaks(sortSelect.value);
+      view.setupEventListeners();
     }),
-
-    document.querySelectorAll("li.high-peak").forEach(highPeakLi => {
-      highPeakLi.addEventListener("click", () => {
-        console.log(this)
+    document.querySelectorAll("li").forEach(highPeakLi => {
+      highPeakLi.addEventListener("click", (e) => {
+        handlers.toggleCompleted(e.target.id);
       })
     })
-
   }
 }
 
 view.displayHighPeaks();
-view.createEventListeners();
+view.setupEventListeners();
