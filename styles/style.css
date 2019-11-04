@@ -23,11 +23,6 @@ p#sort-by-label {
   display: inline
 }
 
-ul#list-of-high-peaks {
-  list-style-type: none;
-}
-
-ul#list-of-high-peaks li {
-  padding: .5rem 0;
-  margin: .5rem 0;
+table#list-of-high-peaks td {
+  width: 150px;
 }
