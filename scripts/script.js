@@ -7,7 +7,8 @@ class HighPeak {
     this._name = name;
     this._elevation = elevation;
     this._status = {
-      completed: false
+      completed: false,
+      dateOfCompletion: 'N/A'
     }
   }
 }
@@ -21,7 +22,7 @@ createHighPeak('Algonquin Peak', 5114);
 createHighPeak('Mount Haystack', 4960);
 createHighPeak('Mount Skylight', 4926);
 createHighPeak('Whiteface Mountain', 4867);
-createHighPeak('Dix Mountain', 4857);
+// createHighPeak('Dix Mountain', 4857);
 // createHighPeak('Gray Peak', 4840);
 // createHighPeak('Iroquois Peak', 4840);
 // createHighPeak('Basin Mountain', 4827);
@@ -47,14 +48,19 @@ const handlers = {
       return a._elevation - b._elevation;
     }
   },
-  toggleCompleted: (highPeakId) => {
-    highPeaksList.forEach((highPeak) => {
-      if ( highPeak._name.toLowerCase().replace(/ /g,"-") === highPeakId ) {
-        return highPeak._status.completed = !highPeak._status.completed
+  toggleCompleted: (highPeakName) => {
+    highPeaksList.forEach(highPeak => {
+      if ( highPeak._name === highPeakName ) {
+        highPeak._status.completed = !highPeak._status.completed
+        if (highPeak._status.completed === true) {
+          let inputDate = prompt('Enter Date')
+          highPeak._status.dateOfCompletion = inputDate;
+        } else if (highPeak._status.completed === false) {
+          highPeak._status.dateOfCompletion = 'N/A'
+        }
       };
     })
     view.displayHighPeaks();
-    view.setupEventListeners();
   }
 }
 
@@ -64,21 +70,14 @@ const view = {
     highPeaksList.sort( handlers.sort[sortOption] );
     highPeaksList.forEach(mtn => {
       let mtnLi = document.createElement("li");
-      mtnLi.id = mtn._name.toLowerCase().replace(/ /g,"-");
-      mtnLi.textContent = mtn._name + " - " + mtn._elevation + "' - Completed: " + mtn._status.completed;
-      mtnLi.textContent = mtn._name + " - " + mtn._elevation + "' - Completed: " + mtn._status.completed;
+      mtnLi.innerHTML = "<button onclick=\"handlers.toggleCompleted('" + mtn._name + "')\">X</button> "
+      mtnLi.innerHTML += mtn._name + " - " + mtn._elevation + "' - Completed: " + mtn._status.completed + " - Date: " + mtn._status.dateOfCompletion;
       highPeaksUl.appendChild(mtnLi);
     })
   },
   setupEventListeners: () => {
     sortSelect.addEventListener("change", () =>{
       view.displayHighPeaks(sortSelect.value);
-      view.setupEventListeners();
-    }),
-    document.querySelectorAll("li").forEach(highPeakLi => {
-      highPeakLi.addEventListener("click", (e) => {
-        handlers.toggleCompleted(e.target.id);
-      })
     })
   }
 }
