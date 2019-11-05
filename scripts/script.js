@@ -30,6 +30,7 @@ createHighPeak('Whiteface Mountain', 4867);
 // createHighPeak('Mount Colden', 4714);
 // createHighPeak('Giant Mountain', 4627);
 
+
 const handlers = {
   sort: {
     byName: ( a, b ) => {
@@ -53,12 +54,18 @@ const handlers = {
     highPeaksList.forEach(highPeak => {
       if ( highPeak._name === highPeakName ) {
         highPeak._status.isCompleted = !highPeak._status.isCompleted
+        if ( highPeak._status.isCompleted === true ) {
+          highPeak._status.dateCompleted = document.querySelector(" input[id=" + highPeak._name.replace(/\s+/g, '-').toLowerCase() + "] ").value;
+        } else {
+          highPeak._status.dateCompleted = "N/A";
+        }
       };
     })
     view.displayHighPeaks();
-  },
+  }
 
 }
+
 
 const view = {
   displayHighPeaks: (sortOption) => {
@@ -71,6 +78,7 @@ const view = {
 
       let mtnDateCompletedInput = document.createElement("input");
       mtnDateCompletedInput.type = "text";
+      mtnDateCompletedInput.id = mtn._name.replace(/\s+/g, '-').toLowerCase();
 
       let mtnCompleteBtn = document.createElement("button");
       mtnCompleteBtn.textContent = "Complete";
@@ -92,6 +100,7 @@ const view = {
   }
 
 }
+
 
 view.displayHighPeaks();
 view.setupEventListeners();
