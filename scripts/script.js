@@ -1,9 +1,5 @@
-const sortSelect = document.querySelector("select#sort-by-select");
-const highPeaksTable = document.querySelector('table#list-of-high-peaks');
-let highPeaksList = [];
-
 class HighPeak {
-  constructor(name, elevation) {
+  constructor( name, elevation ) {
     this._name = name;
     this._elevation = elevation;
     this._status = {
@@ -13,31 +9,19 @@ class HighPeak {
   }
 }
 
-const createHighPeak = (name, elevation) => {
-	highPeaksList[highPeaksList.length] = new HighPeak(name, elevation);
-}
+const highPeaksList = {
+  highPeaks: [],
 
-createHighPeak('Mount Marcy', 5344);
-createHighPeak('Algonquin Peak', 5114);
-createHighPeak('Mount Haystack', 4960);
-createHighPeak('Mount Skylight', 4926);
-createHighPeak('Whiteface Mountain', 4867);
-// createHighPeak('Dix Mountain', 4857);
-// createHighPeak('Gray Peak', 4840);
-// createHighPeak('Iroquois Peak', 4840);
-// createHighPeak('Basin Mountain', 4827);
-// createHighPeak('Gothics Mountain', 4736);
-// createHighPeak('Mount Colden', 4714);
-// createHighPeak('Giant Mountain', 4627);
+  createHighPeak: ( name, elevation ) => {
+    highPeaksList.highPeaks[highPeaksList.highPeaks.length] = new HighPeak( name, elevation );
+  },
 
-
-const handlers = {
   sort: {
     byName: ( a, b ) => {
-      if (a._name < b._name) {
+      if ( a._name < b._name ) {
         return -1;
       }
-      if (a._name > b._name) {
+      if ( a._name > b._name ) {
         return 1;
       }
       return 0;
@@ -48,14 +32,17 @@ const handlers = {
     byLow: ( a, b ) => {
       return a._elevation - b._elevation;
     }
-  },
+  }
+}
 
-  toggleCompleted: (highPeakName) => {
-    highPeaksList.forEach(highPeak => {
+const handlers = {
+  toggleCompleted: ( highPeakName ) => {
+    highPeaksList.highPeaks.forEach( highPeak => {
       if ( highPeak._name === highPeakName ) {
+        let dateInput = document.querySelector("input[id=" + highPeak._name.replace(/\s+/g, '-').toLowerCase() + "]");
         highPeak._status.isCompleted = !highPeak._status.isCompleted
         if ( highPeak._status.isCompleted === true ) {
-          highPeak._status.dateCompleted = document.querySelector(" input[id=" + highPeak._name.replace(/\s+/g, '-').toLowerCase() + "] ").value;
+          highPeak._status.dateCompleted = dateInput.value;
         } else {
           highPeak._status.dateCompleted = "N/A";
         }
@@ -63,44 +50,67 @@ const handlers = {
     })
     view.displayHighPeaks();
   }
-
 }
 
-
 const view = {
-  displayHighPeaks: (sortOption) => {
+  displayHighPeaks: ( sortOption ) => {
+    const highPeaksTable = document.querySelector('table#list-of-high-peaks');
     highPeaksTable.innerHTML = '';
-    highPeaksList.sort( handlers.sort[sortOption] );
+    let listNum = 0;
+    highPeaksList.highPeaks.sort( highPeaksList.sort[sortOption] ).forEach( highPeak => {
+      listNum++
+      let highPeakTr = document.createElement("tr");
+      highPeakTr.innerHTML = `<td>${listNum}</td><td>${highPeak._name}</td><td>${highPeak._elevation}'</td><td>Completed: ${highPeak._status.isCompleted}</td><td>Date: ${highPeak._status.dateCompleted}</td>`;
+      highPeakTr.appendChild( view.createDateCompletedInput(highPeak) ); 
+      highPeakTr.appendChild( view.createCompleteButton(highPeak) ); 
+      highPeaksTable.appendChild( highPeakTr ); 
+    });
+  },
 
-    highPeaksList.forEach(mtn => {
-      let mtnTr = document.createElement("tr");
-      mtnTr.innerHTML = `<td>${mtn._name}</td><td>${mtn._elevation}'</td><td>Completed: ${mtn._status.isCompleted}</td><td>Date: ${mtn._status.dateCompleted}</td>`;
+  createDateCompletedInput: ( highPeak ) => {
+    let dateCompletedInput = document.createElement("input");
+    dateCompletedInput.type = "text";
+    dateCompletedInput.id = highPeak._name.replace(/\s+/g, '-').toLowerCase();
+    return dateCompletedInput;
+  },
 
-      let mtnDateCompletedInput = document.createElement("input");
-      mtnDateCompletedInput.type = "text";
-      mtnDateCompletedInput.id = mtn._name.replace(/\s+/g, '-').toLowerCase();
-
-      let mtnCompleteBtn = document.createElement("button");
-      mtnCompleteBtn.textContent = "Complete";
-      mtnCompleteBtn.addEventListener("click", function() {
-        handlers.toggleCompleted(mtn._name);
-      })
-
-      mtnTr.appendChild(mtnDateCompletedInput); 
-      mtnTr.appendChild(mtnCompleteBtn); 
-      highPeaksTable.appendChild(mtnTr); 
+  createCompleteButton: ( highPeak ) => {
+    let completeButton = document.createElement("button");
+    completeButton.textContent = "Complete";
+    completeButton.addEventListener("click", function() {
+      handlers.toggleCompleted( highPeak._name );
     })
-
+    return completeButton;
   },
 
   setupEventListeners: () => {
+    const sortSelect = document.querySelector("select#sort-by-select");
     sortSelect.addEventListener("change", () =>{
-      view.displayHighPeaks(sortSelect.value);
+      view.displayHighPeaks( sortSelect.value );
     })
   }
-
 }
 
+highPeaksList.createHighPeak('Mount Marcy', 5344);
+highPeaksList.createHighPeak('Algonquin Peak', 5114);
+highPeaksList.createHighPeak('Mount Haystack', 4960);
+highPeaksList.createHighPeak('Mount Skylight', 4926);
+highPeaksList.createHighPeak('Whiteface Mountain', 4867);
+highPeaksList.createHighPeak('Dix Mountain', 4857);
+highPeaksList.createHighPeak('Gray Peak', 4840);
+highPeaksList.createHighPeak('Iroquois Peak', 4840);
+highPeaksList.createHighPeak('Basin Mountain', 4827);
+highPeaksList.createHighPeak('Gothics Mountain', 4736);
+highPeaksList.createHighPeak('Mount Colden', 4714);
+highPeaksList.createHighPeak('Giant Mountain', 4627);
+highPeaksList.createHighPeak('Nippletop Mountain', 4620);
+highPeaksList.createHighPeak('Santanoni Peak', 4607);
+highPeaksList.createHighPeak('Mount Redfield', 4606);
+highPeaksList.createHighPeak('Wright Peak', 4580);
+highPeaksList.createHighPeak('Saddleback Mountain', 4515);
+highPeaksList.createHighPeak('Panther Peak', 4442);
+highPeaksList.createHighPeak('Tabletop Mountain', 4427);
+highPeaksList.createHighPeak('Rocky Peak Ridge', 4420);
 
 view.displayHighPeaks();
 view.setupEventListeners();
