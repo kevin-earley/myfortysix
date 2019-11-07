@@ -4,6 +4,7 @@ const highPeaksTable = document.querySelector('table#list-of-high-peaks');
 class HighPeak {
   constructor(name, elevation) {
     this._name = name;
+    this._nameFormatted = name.replace(/\s+/g, '-').toLowerCase();
     this._elevation = elevation;
     this._status = {
       isCompleted: false,
@@ -40,18 +41,22 @@ const highPeaksList = {
 
 const handlers = {
   toggleCompleted: function(highPeakName) {
-    highPeaksList.highPeaks.forEach(function(highPeak) {
+    highPeaksList.highPeaks.forEach(highPeak => {
       if (highPeak._name === highPeakName) {
-        let dateInput = document.querySelector(`input[id=${ highPeak._name.replace(/\s+/g, '-').toLowerCase() }]`);
         highPeak._status.isCompleted = !highPeak._status.isCompleted
-        if (highPeak._status.isCompleted === true) {
-          return highPeak._status.dateCompleted = dateInput.value;
-        } else {
-          return highPeak._status.dateCompleted = "N/A";
-        }
+        this.addDateCompleted(highPeak);
       };
     })
     view.displayHighPeaks();
+  },
+
+  addDateCompleted: function(highPeak) {
+    let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
+    if (highPeak._status.isCompleted === true) {
+      return highPeak._status.dateCompleted = dateInput.value;
+    } else {
+      return highPeak._status.dateCompleted = "N/A";
+    };
   }
 }
 
@@ -65,9 +70,11 @@ const view = {
 
   createHighPeakTr: function(highPeak, i) {
     let highPeakTr = document.createElement("tr");
-    highPeakTr.innerHTML = `<td>${i + 1}</td><td>${highPeak._name}</td><td>${highPeak._elevation}'</td><td>Completed: ${highPeak._status.isCompleted}</td><td>Date: ${highPeak._status.dateCompleted}</td>`;
+    highPeakTr.id = highPeak._nameFormatted;
+    highPeakTr.innerHTML = `<td class='index'>${i + 1}</td><td class='high-peak-name'>${highPeak._name}</td><td class='high-peak-elevation'>${highPeak._elevation}'</td><td class='is-completed'>Completed: ${highPeak._status.isCompleted}</td><td class='date-completed'>Date: ${highPeak._status.dateCompleted}</td>`;
 
     let completeFormTd = document.createElement("td");
+    completeFormTd.className = "completed-form";
     completeFormTd.appendChild(this.createDateCompletedInput(highPeak)); 
     completeFormTd.appendChild(this.createCompleteButton(highPeak));
     highPeakTr.appendChild(completeFormTd);
@@ -77,7 +84,6 @@ const view = {
   createDateCompletedInput: function(highPeak) {
     let dateCompletedInput = document.createElement("input");
     dateCompletedInput.type = "text";
-    dateCompletedInput.id = highPeak._name.replace(/\s+/g, '-').toLowerCase();
     return dateCompletedInput;
   },
 
@@ -118,7 +124,8 @@ highPeaksList.createHighPeak('Panther Peak', 4442);
 highPeaksList.createHighPeak('Tabletop Mountain', 4427);
 highPeaksList.createHighPeak('Rocky Peak Ridge', 4420);
 highPeaksList.createHighPeak('Macomb Mountan', 4405);
-highPeaksList.createHighPeak('Armstorong Mountan', 4400);
+highPeaksList.createHighPeak('Armstrong Mountan', 4400);
+highPeaksList.createHighPeak('Hough Peak Mountan', 4400);
 highPeaksList.createHighPeak('Seward Mountan', 4361);
 highPeaksList.createHighPeak('Mount Marshall', 4360);
 highPeaksList.createHighPeak('Allen Mountain', 4340);
@@ -129,6 +136,19 @@ highPeaksList.createHighPeak('Lower Wolfjaw Mountain', 4175);
 highPeaksList.createHighPeak('Street Mountain', 4166);
 highPeaksList.createHighPeak('Phelps Mountain', 4161);
 highPeaksList.createHighPeak('Mount Donaldson', 4140);
+highPeaksList.createHighPeak('Seymour Mountain', 4120);
+highPeaksList.createHighPeak('Sawteeth Mountain', 4100);
+highPeaksList.createHighPeak('Cascade Mountain', 4098);
+highPeaksList.createHighPeak('South Dix Mountain', 4060);
+highPeaksList.createHighPeak('Porter Mountain', 4059);
+highPeaksList.createHighPeak('Mount Colvin', 4057);
+highPeaksList.createHighPeak('Mount Emmons', 4040);
+highPeaksList.createHighPeak('Dial Mountain', 4020);
+highPeaksList.createHighPeak('Grace Peak Mountain', 4012);
+highPeaksList.createHighPeak('Blake Mountain', 3960);
+highPeaksList.createHighPeak('Cliff Mountain', 3960);
+highPeaksList.createHighPeak('Nye Mountain', 3895);
+highPeaksList.createHighPeak('Couchsachraga Peak Mountain', 3820);
 
 view.displayHighPeaks();
 view.setupEventListeners();
