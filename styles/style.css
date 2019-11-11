@@ -23,6 +23,10 @@ body {
   background: Sienna;
 }
 
+p {
+  line-height: 2.5rem;
+}
+
 p#sort-by-label {
   display: inline
 }
