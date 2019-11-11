@@ -17,8 +17,8 @@ body {
   box-sizing: border-box;
 
   font-size: 1.5rem;
-  /* color: white;
-  background: DarkOliveGreen; */
+  /* color: white; */
+  /* background: DarkOliveGreen; */
 }
 
 p#sort-by-label {
@@ -29,9 +29,9 @@ table {
   border-spacing: .2rem;
 }
 
-/* tr {
-  background: OliveDrab;
-} */
+tr {
+  /* background: OliveDrab; */
+}
 
 td {
   padding: 1rem;

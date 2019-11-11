@@ -15,9 +15,56 @@ class HighPeak {
 
 const highPeaksList = {
   highPeaks: [],
-
   createHighPeak: function(name, elevation) {
     this.highPeaks[this.highPeaks.length] = new HighPeak( name, elevation );
+  },
+  addHighPeaks: function() {
+    this.createHighPeak('Mount Marcy', 5344);
+    this.createHighPeak('Algonquin Peak', 5114);
+    this.createHighPeak('Mount Haystack', 4960);
+    this.createHighPeak('Mount Skylight', 4926);
+    this.createHighPeak('Whiteface Mountain', 4867);
+    this.createHighPeak('Dix Mountain', 4857);
+    this.createHighPeak('Gray Peak', 4840);
+    this.createHighPeak('Iroquois Peak', 4840);
+    this.createHighPeak('Basin Mountain', 4827);
+    this.createHighPeak('Gothics Mountain', 4736);
+    this.createHighPeak('Mount Colden', 4714);
+    this.createHighPeak('Giant Mountain', 4627);
+    this.createHighPeak('Nippletop Mountain', 4620);
+    this.createHighPeak('Santanoni Peak', 4607);
+    this.createHighPeak('Mount Redfield', 4606);
+    this.createHighPeak('Wright Peak', 4580);
+    this.createHighPeak('Saddleback Mountain', 4515);
+    this.createHighPeak('Panther Peak', 4442);
+    this.createHighPeak('Tabletop Mountain', 4427);
+    this.createHighPeak('Rocky Peak Ridge', 4420);
+    this.createHighPeak('Macomb Mountan', 4405);
+    this.createHighPeak('Armstrong Mountan', 4400);
+    this.createHighPeak('Hough Peak Mountan', 4400);
+    this.createHighPeak('Seward Mountan', 4361);
+    this.createHighPeak('Mount Marshall', 4360);
+    this.createHighPeak('Allen Mountain', 4340);
+    this.createHighPeak('Big Slide Mountain', 4240);
+    this.createHighPeak('Esther Mountain', 4340);
+    this.createHighPeak('Upper Wolfjaw Mountain', 4185);
+    this.createHighPeak('Lower Wolfjaw Mountain', 4175);
+    this.createHighPeak('Street Mountain', 4166);
+    this.createHighPeak('Phelps Mountain', 4161);
+    this.createHighPeak('Mount Donaldson', 4140);
+    this.createHighPeak('Seymour Mountain', 4120);
+    this.createHighPeak('Sawteeth Mountain', 4100);
+    this.createHighPeak('Cascade Mountain', 4098);
+    this.createHighPeak('South Dix Mountain', 4060);
+    this.createHighPeak('Porter Mountain', 4059);
+    this.createHighPeak('Mount Colvin', 4057);
+    this.createHighPeak('Mount Emmons', 4040);
+    this.createHighPeak('Dial Mountain', 4020);
+    this.createHighPeak('Grace Peak Mountain', 4012);
+    this.createHighPeak('Blake Mountain', 3960);
+    this.createHighPeak('Cliff Mountain', 3960);
+    this.createHighPeak('Nye Mountain', 3895);
+    this.createHighPeak('Couchsachraga Peak Mountain', 3820);
   },
 
   sort: {
@@ -43,15 +90,19 @@ const handlers = {
   toggleCompleted: function(highPeakName) {
     highPeaksList.highPeaks.forEach(highPeak => {
       if (highPeak._name === highPeakName) {
-        highPeak._status.isCompleted = !highPeak._status.isCompleted
-        this.addDateCompleted(highPeak);
+        let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
+        if (highPeak._status.isCompleted === false && dateInput.value === '') {
+          alert('Please fill in date completed before marking complete');
+        } else {
+          highPeak._status.isCompleted = !highPeak._status.isCompleted
+          this.addDateCompleted(highPeak, dateInput);
+        }
       };
     })
     view.displayHighPeaks();
   },
 
-  addDateCompleted: function(highPeak) {
-    let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
+  addDateCompleted: function(highPeak, dateInput) {
     if (highPeak._status.isCompleted === true) {
       return highPeak._status.dateCompleted = dateInput.value;
     } else {
@@ -84,12 +135,19 @@ const view = {
   createDateCompletedInput: function(highPeak) {
     let dateCompletedInput = document.createElement("input");
     dateCompletedInput.type = "text";
+    if (highPeak._status.isCompleted === true) {
+      dateCompletedInput.disabled = true;
+    }
     return dateCompletedInput;
   },
 
   createCompleteButton: function(highPeak) {
     let completeButton = document.createElement("button");
-    completeButton.textContent = "Complete";
+    if (highPeak._status.isCompleted === false) {
+      completeButton.textContent = "Complete";
+    } else {
+      completeButton.textContent = "Reset";
+    }
     completeButton.addEventListener("click", function() {
       handlers.toggleCompleted(highPeak._name);
     });
@@ -103,52 +161,6 @@ const view = {
   }
 }
 
-highPeaksList.createHighPeak('Mount Marcy', 5344);
-highPeaksList.createHighPeak('Algonquin Peak', 5114);
-highPeaksList.createHighPeak('Mount Haystack', 4960);
-highPeaksList.createHighPeak('Mount Skylight', 4926);
-highPeaksList.createHighPeak('Whiteface Mountain', 4867);
-highPeaksList.createHighPeak('Dix Mountain', 4857);
-highPeaksList.createHighPeak('Gray Peak', 4840);
-highPeaksList.createHighPeak('Iroquois Peak', 4840);
-highPeaksList.createHighPeak('Basin Mountain', 4827);
-highPeaksList.createHighPeak('Gothics Mountain', 4736);
-highPeaksList.createHighPeak('Mount Colden', 4714);
-highPeaksList.createHighPeak('Giant Mountain', 4627);
-highPeaksList.createHighPeak('Nippletop Mountain', 4620);
-highPeaksList.createHighPeak('Santanoni Peak', 4607);
-highPeaksList.createHighPeak('Mount Redfield', 4606);
-highPeaksList.createHighPeak('Wright Peak', 4580);
-highPeaksList.createHighPeak('Saddleback Mountain', 4515);
-highPeaksList.createHighPeak('Panther Peak', 4442);
-highPeaksList.createHighPeak('Tabletop Mountain', 4427);
-highPeaksList.createHighPeak('Rocky Peak Ridge', 4420);
-highPeaksList.createHighPeak('Macomb Mountan', 4405);
-highPeaksList.createHighPeak('Armstrong Mountan', 4400);
-highPeaksList.createHighPeak('Hough Peak Mountan', 4400);
-highPeaksList.createHighPeak('Seward Mountan', 4361);
-highPeaksList.createHighPeak('Mount Marshall', 4360);
-highPeaksList.createHighPeak('Allen Mountain', 4340);
-highPeaksList.createHighPeak('Big Slide Mountain', 4240);
-highPeaksList.createHighPeak('Esther Mountain', 4340);
-highPeaksList.createHighPeak('Upper Wolfjaw Mountain', 4185);
-highPeaksList.createHighPeak('Lower Wolfjaw Mountain', 4175);
-highPeaksList.createHighPeak('Street Mountain', 4166);
-highPeaksList.createHighPeak('Phelps Mountain', 4161);
-highPeaksList.createHighPeak('Mount Donaldson', 4140);
-highPeaksList.createHighPeak('Seymour Mountain', 4120);
-highPeaksList.createHighPeak('Sawteeth Mountain', 4100);
-highPeaksList.createHighPeak('Cascade Mountain', 4098);
-highPeaksList.createHighPeak('South Dix Mountain', 4060);
-highPeaksList.createHighPeak('Porter Mountain', 4059);
-highPeaksList.createHighPeak('Mount Colvin', 4057);
-highPeaksList.createHighPeak('Mount Emmons', 4040);
-highPeaksList.createHighPeak('Dial Mountain', 4020);
-highPeaksList.createHighPeak('Grace Peak Mountain', 4012);
-highPeaksList.createHighPeak('Blake Mountain', 3960);
-highPeaksList.createHighPeak('Cliff Mountain', 3960);
-highPeaksList.createHighPeak('Nye Mountain', 3895);
-highPeaksList.createHighPeak('Couchsachraga Peak Mountain', 3820);
-
+highPeaksList.addHighPeaks();
 view.displayHighPeaks();
 view.setupEventListeners();
