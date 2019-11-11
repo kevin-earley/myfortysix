@@ -8,7 +8,7 @@ class HighPeak {
     this._elevation = elevation;
     this._status = {
       isCompleted: false,
-      dateCompleted: 'N/A'
+      dateCompleted: 'incomplete'
     }
   }
 }
@@ -109,7 +109,7 @@ const handlers = {
     if (highPeak._status.isCompleted === true) {
       return highPeak._status.dateCompleted = dateInput.value;
     } else {
-      return highPeak._status.dateCompleted = "N/A";
+      return highPeak._status.dateCompleted = "incomplete";
     };
   }
 }
