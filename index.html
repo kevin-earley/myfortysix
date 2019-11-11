@@ -6,12 +6,13 @@
 </head>
 <body>
 
-	<p>Complete: 0 :: Incomplete: 0</p>
+	<p>Complete: <span class="complete-count">0</span> :: Incomplete: <span class="incomplete-count">0</span></p>
 	<p id="sort-by-label">Sort by: </p>
 	<select id="sort-by-select">
 		<option value="byName">Name</option>
 		<option value="byHigh" selected="selected">High-Low</option>
 		<option value="byLow">Low-High</option>
+		<option value="byCompleted">Completed</option>
 	</select>
 
 	<table id="list-of-high-peaks">

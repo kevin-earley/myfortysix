@@ -82,6 +82,9 @@ const highPeaksList = {
     },
     byLow: function(a, b) {
       return a._elevation - b._elevation;
+    },
+    byCompleted: function(a, b) {
+      return b._status.isCompleted - a._status.isCompleted;
     }
   }
 }
@@ -114,9 +117,13 @@ const handlers = {
 const view = {
   displayHighPeaks: function(sortOption) {
     highPeaksTable.innerHTML = '';
+    if (sortOption === "byCompleted") {
+      highPeaksList.highPeaks.sort(highPeaksList.sort.byName);
+    }
     highPeaksList.highPeaks.sort(highPeaksList.sort[sortOption]).forEach((highPeak, i) => {
       this.createHighPeakTr(highPeak, i);
     });
+    this.updateCompletedCounters();
   },
 
   createHighPeakTr: function(highPeak, i) {
@@ -134,9 +141,10 @@ const view = {
 
   createDateCompletedInput: function(highPeak) {
     let dateCompletedInput = document.createElement("input");
-    dateCompletedInput.type = "text";
+    dateCompletedInput.type = "date";
     if (highPeak._status.isCompleted === true) {
       dateCompletedInput.disabled = true;
+      dateCompletedInput.style.display = 'none';
     }
     return dateCompletedInput;
   },
@@ -152,6 +160,20 @@ const view = {
       handlers.toggleCompleted(highPeak._name);
     });
     return completeButton;
+  },
+
+  updateCompletedCounters: function() {
+    let completedCount = 0;
+    let notCompletedCount = 0;
+    highPeaksList.highPeaks.forEach(highPeak => {
+      if (highPeak._status.isCompleted === true) {
+        completedCount ++
+      } else {
+        notCompletedCount ++
+      }
+    })
+    document.querySelector("span.complete-count").innerHTML = completedCount;
+    document.querySelector("span.incomplete-count").innerHTML = notCompletedCount;
   },
 
   setupEventListeners: function() {
