@@ -13,14 +13,14 @@ html {
 }
 
 body {
-  font-family: 'Cabin', sans-serif;
+  /* font-family: 'Cabin', sans-serif; */
   font-weight: 400;
   padding: 3rem;
   box-sizing: border-box;
 
   font-size: 1.5rem;
-  color: Gold;
-  background: Sienna;
+  /* color: Gold;
+  background: Sienna; */
 }
 
 p {
@@ -36,7 +36,7 @@ table {
 }
 
 tr {
-  background: SaddleBrown;
+  /* background: SaddleBrown; */
 }
 
 td {
