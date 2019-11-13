@@ -110,6 +110,9 @@ const handlers = {
 const view = {
   displayHighPeaks: function(sortOption) {
     highPeaksTable.innerHTML = '';
+    // let highPeaksTableHead = document.createElement("tr");
+    // highPeaksTableHead.innerHTML = "<th>#</th><th>Name</th><th>Elevation</th><th>Date Completed</th><th>Complete</th><th></th>"
+    // highPeaksTable.appendChild(highPeaksTableHead);
     if (sortOption === "byCompleted") {
       highPeaksList.highPeaks.sort(highPeaksList.sort.byName);
     }
@@ -122,7 +125,7 @@ const view = {
   createHighPeakTr: function(highPeak, i) {
     let highPeakTr = document.createElement("tr");
     highPeakTr.id = highPeak._nameFormatted;
-    highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>Date: ${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
+    highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
     highPeaksTable.appendChild(highPeakTr);
 
     let completedIconTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=is-completed]`);
@@ -135,7 +138,7 @@ const view = {
 
   createCompletedIcon: function(highPeak, completedFormTd) {
     let completedIcon = document.createElement("p");
-    completedIcon.innerHTML = highPeak._status.isCompleted ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'
+    completedIcon.innerHTML = highPeak._status.isCompleted ? '<i class="fas fa-check-circle check-green"></i>' : '<i class="far fa-circle check-red"></i>'
     completedIcon.addEventListener("click", () => {
       if (highPeak._status.isCompleted === false) {
         completedFormTd.style.display = completedFormTd.style.display === 'none' ? 'block' : 'none';

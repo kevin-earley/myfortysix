@@ -24,43 +24,60 @@ p {
 }
 
 p#sort-by-label {
-  display: inline
+  display: inline;
 }
 
-table {
-  background: wheat;
+select#sort-by-select {
+  display: inline;
+  margin-bottom: 1.6rem;
 }
 
-tr {
-  background: cornsilk;
-}
-
-td {
-  padding: 1rem;
+th {
+  font-size: 1.2rem;
+  text-align: left;
+  background: lightgray;
 }
 
 td.number {
-  width: 3rem;
+  width: 6rem;
 }
 
 td.name {
-  width: 28rem;
+  width: 30rem;
   font-weight: 700;
 }
 
 td.elevation {
-  width: 8rem;
+  width: 9rem;
 }
 
 td.date-completed {
-  width: 18rem;
+  width: 12rem;
 }
 
 td.is-completed {
-  width: 5rem;
   text-align: center;
+  font-size: 2rem;
 }
 
 td.completed-form {
-  width: 25rem;
+  width: 24rem;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid silver;
+}
+
+th, td {
+  border-bottom: 1px solid silver;
+  padding: 1rem;
+}
+
+.check-green {
+  color: mediumseagreen;
+}
+
+.check-red {
+  color: crimson;
 }
