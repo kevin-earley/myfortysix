@@ -16,7 +16,7 @@ class HighPeak {
 const highPeaksList = {
   highPeaks: [],
   createHighPeak: function(name, elevation) {
-    this.highPeaks[this.highPeaks.length] = new HighPeak( name, elevation );
+    this.highPeaks[this.highPeaks.length] = new HighPeak(name, elevation);
   },
   addHighPeaks: function() {
     this.createHighPeak('Mount Marcy', 5344);
@@ -90,27 +90,20 @@ const highPeaksList = {
 }
 
 const handlers = {
-  toggleCompleted: function(highPeakName) {
+  clickComplete: function(highPeakName) {
     highPeaksList.highPeaks.forEach(highPeak => {
       if (highPeak._name === highPeakName) {
         let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
         if (highPeak._status.isCompleted === false && dateInput.value === '') {
-          return alert('Please fill in date completed before marking complete');
+          return dateInput.parentElement.style.display = 'none';
         } else {
-          highPeak._status.isCompleted = !highPeak._status.isCompleted
-          this.addDateCompleted(highPeak, dateInput);
+          let dateOfCompletetion = new Date(dateInput.value)
+          highPeak._status.isCompleted = true;
+          highPeak._status.dateCompleted = `${dateOfCompletetion.getMonth() + 1}.${dateOfCompletetion.getDate()}.${dateOfCompletetion.getFullYear()}`;
           view.displayHighPeaks();
         }
       };
     })
-  },
-
-  addDateCompleted: function(highPeak, dateInput) {
-    if (highPeak._status.isCompleted === true) {
-      return highPeak._status.dateCompleted = dateInput.value;
-    } else {
-      return highPeak._status.dateCompleted = "incomplete";
-    };
   }
 }
 
@@ -129,47 +122,45 @@ const view = {
   createHighPeakTr: function(highPeak, i) {
     let highPeakTr = document.createElement("tr");
     highPeakTr.id = highPeak._nameFormatted;
-    highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>Date: ${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'></td>`;
+    highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>Date: ${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
     highPeaksTable.appendChild(highPeakTr);
 
-    let completedFormTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form]`);
+    let completedIconTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=is-completed]`);
+    let completedFormTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] div`);
+    completedIconTd.appendChild(this.createCompletedIcon(highPeak, completedFormTd));
     completedFormTd.appendChild(this.createCompletedForm(highPeak)[0]); 
     completedFormTd.appendChild(this.createCompletedForm(highPeak)[1]); 
-    completedFormTd.style.display = "none";
-
-    let completedIconTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=is-completed]`);
-    completedIconTd.appendChild(this.createCompletedIcon(highPeak, completedFormTd));
+    completedFormTd.style.display = 'none';
   },
 
   createCompletedIcon: function(highPeak, completedFormTd) {
-    let completedIcon = document.createElement("button");
-    completedIcon.textContent = `${highPeak._status.isCompleted}`
-
+    let completedIcon = document.createElement("p");
+    completedIcon.innerHTML = highPeak._status.isCompleted ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'
     completedIcon.addEventListener("click", () => {
       if (highPeak._status.isCompleted === false) {
-        completedFormTd.style.display = ''
+        completedFormTd.style.display = completedFormTd.style.display === 'none' ? 'block' : 'none';
+        document.querySelectorAll("tr").forEach(tr => {
+          if (tr.id != highPeak._nameFormatted) {
+            document.querySelector(`tr[id=${tr.id}] td[class=completed-form] div`).style.display = 'none';
+          }
+        })
       } else if (highPeak._status.isCompleted === true) {
-        highPeak._status.isCompleted = false;
-        highPeak._status.dateCompleted = "incomplete";
-        this.displayHighPeaks();
+        highPeak._status.isCompleted = false
+        highPeak._status.dateCompleted = 'incomplete'
+        view.displayHighPeaks();
       }
     })
-
     return completedIcon;
   },
 
   createCompletedForm: function(highPeak) {
     let dateCompletedInput = document.createElement("input");
     dateCompletedInput.type = "date";
-    if (highPeak._status.isCompleted === true) {
-      dateCompletedInput.disabled = true;
-      dateCompletedInput.style.display = 'none';
-    }
 
     let completeButton = document.createElement("button");
     completeButton.textContent = "Complete";
     completeButton.addEventListener("click", function() {
-      handlers.toggleCompleted(highPeak._name);
+      handlers.clickComplete(highPeak._name);
     });
 
     return [dateCompletedInput, completeButton]
