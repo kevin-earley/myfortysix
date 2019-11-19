@@ -110,9 +110,9 @@ const handlers = {
 const view = {
   displayHighPeaks: function(sortOption) {
     highPeaksTable.innerHTML = '';
-    // let highPeaksTableHead = document.createElement("tr");
-    // highPeaksTableHead.innerHTML = "<th>#</th><th>Name</th><th>Elevation</th><th>Date Completed</th><th>Complete</th><th></th>"
-    // highPeaksTable.appendChild(highPeaksTableHead);
+    let highPeaksTableHead = document.createElement("tr");
+    highPeaksTableHead.innerHTML = "<th>#</th><th>Name</th><th>Elevation</th><th>Date Completed</th><th>Complete</th><th></th>"
+    highPeaksTable.appendChild(highPeaksTableHead);
     if (sortOption === "byCompleted") {
       highPeaksList.highPeaks.sort(highPeaksList.sort.byName);
     }
@@ -142,11 +142,23 @@ const view = {
     completedIcon.addEventListener("click", () => {
       if (highPeak._status.isCompleted === false) {
         completedFormTd.style.display = completedFormTd.style.display === 'none' ? 'block' : 'none';
-        document.querySelectorAll("tr").forEach(tr => {
-          if (tr.id != highPeak._nameFormatted) {
-            document.querySelector(`tr[id=${tr.id}] td[class=completed-form] div`).style.display = 'none';
+
+
+        // document.querySelectorAll("tr").forEach(tr => {
+        //   if (tr.id != highPeak._nameFormatted) {
+        //     document.querySelector(`tr[id=${tr.id}] td[class=completed-form] div`).style.display = 'none';
+        //   }
+        // })
+
+        let allTr = document.querySelectorAll("tr");
+        for (i = 1; i < allTr.length; i++) {
+          if (allTr[i].id != highPeak._nameFormatted) {
+            document.querySelector(`tr[id=${allTr[i].id}] td[class=completed-form] div`).style.display = 'none';
           }
-        })
+        }
+
+
+
       } else if (highPeak._status.isCompleted === true) {
         highPeak._status.isCompleted = false
         highPeak._status.dateCompleted = 'incomplete'

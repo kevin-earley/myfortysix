@@ -7,18 +7,25 @@
 </head>
 <body>
 
-	<p>Complete: <span class="complete-count">0</span></p>
-	<p>Incomplete: <span class="incomplete-count">0</span></p>
-	<p id="sort-by-label">Sort by: </p>
-	<select id="sort-by-select">
-		<option value="byName">Name</option>
-		<option value="byHigh" selected="selected">High-Low</option>
-		<option value="byLow">Low-High</option>
-		<option value="byCompleted">Completed</option>
-	</select>
-
-	<table id="list-of-high-peaks">
-	</table>
+<div class="container">
+	<div class="header">
+		<h1><i class="fas fa-mountain"></i> myFortysix</h1>
+		<div class="header-counters">
+			<p>Complete: <span class="complete-count">0</span></p>
+			<p>Incomplete: <span class="incomplete-count">0</span></p>
+		</div>
+		<div class="header-sortby">
+			<p id="sort-by-label">Sort by: </p>
+			<select id="sort-by-select">
+				<option value="byName">Name</option>
+				<option value="byHigh" selected="selected">High-Low</option>
+				<option value="byLow">Low-High</option>
+				<option value="byCompleted">Completed</option>
+			</select>
+		</div>
+	</div>
+	<table id="list-of-high-peaks"></table>
+</div>
 	
 	<script type="text/javascript" src="scripts/script.js"></script>
 </body>
