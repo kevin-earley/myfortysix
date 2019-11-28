@@ -126,6 +126,7 @@ const view = {
     let highPeakTr = document.createElement("tr");
     highPeakTr.id = highPeak._nameFormatted;
     highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
+    // highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
     highPeaksTable.appendChild(highPeakTr);
 
     let completedIconTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=is-completed]`);
