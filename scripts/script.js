@@ -1,5 +1,5 @@
 const sortSelect = document.querySelector("select#sort-by-select");
-const highPeaksTable = document.querySelector('table#list-of-high-peaks');
+const highPeaksTable = document.querySelector('table#high-peaks-table');
 
 class HighPeak {
   constructor(name, elevation) {

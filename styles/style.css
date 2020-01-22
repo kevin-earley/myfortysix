@@ -14,26 +14,11 @@ html {
 
 body {
   font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
   font-weight: 400;
+
   padding: 3rem;
   box-sizing: border-box;
-
-  font-size: 1.5rem;
-  background-image: linear-gradient(to bottom right,
-  rgba(107, 142, 35, 0.5),
-  rgba(85, 107, 47, 0.5)),
-  url("../assets/images/thomas-dils.jpg");
-  background-position: center;
-  background-size: cover;
-}
-
-h1 {
-  font-size: 4.5rem;
-  margin-bottom: 1.5rem;
-}
-
-p {
-  line-height: 2.5rem;
 }
 
 p#sort-by-label {
@@ -41,29 +26,12 @@ p#sort-by-label {
 }
 
 select#sort-by-select {
-  display: inline;
   margin-bottom: 1rem;
-}
-
-div.container {
-  margin: 0 auto;
-  width: 90rem;
-}
-
-div.header {
-  color: snow;
-  font-weight: 700;
-}
-
-tr {
-  color: gold;
-  background: saddlebrown;
 }
 
 th {
   font-size: 1.2rem;
   text-align: left;
-  background: sienna;
 }
 
 td.number {
@@ -90,27 +58,4 @@ td.is-completed {
 
 td.completed-form {
   width: 24rem;
-}
-
-table {
-  border-collapse: collapse;
-  border: 1rem solid sienna;
-}
-
-th {
-  border-bottom: 1px solid sienna;
-  padding: .5rem 1rem 1rem 1rem;
-}
-
-td {
-  border-bottom: 1px solid sienna;
-  padding: 1rem;
-}
-
-.check-green {
-  color: limegreen;
-}
-
-.check-red {
-  color: tan;
 }
