@@ -14,10 +14,12 @@ class HighPeak {
   }
 }
 
+// Function to create High Peak objs and add to highPeaks Arr
 function createHighPeak(name, elevation) {
   highPeaks[highPeaks.length] = new HighPeak(name, elevation);
 }
 
+// Create High Peak objs
 createHighPeak('Mount Marcy', 5344);
 createHighPeak('Algonquin Peak', 5114);
 createHighPeak('Mount Haystack', 4960);
@@ -65,6 +67,12 @@ createHighPeak('Cliff Mountain', 3960);
 createHighPeak('Nye Mountain', 3895);
 createHighPeak('Couchsachraga Peak Mountain', 3820);
 
+// Sort select change event
+sortSelect.addEventListener("change", () => {
+  view.displayHighPeaks(sortSelect.value);
+})
+
+// Obj of table sort functions
 const sort = {
   byName: function(a, b) {
     if ( a._name < b._name ) {
@@ -86,24 +94,39 @@ const sort = {
   }
 }
 
-const handlers = {
-  clickComplete: function(highPeakName) {
-    highPeaks.forEach(highPeak => {
-      if (highPeak._name === highPeakName) {
-        let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
-        if (highPeak._status.isCompleted === false && dateInput.value === '') {
-          return dateInput.parentElement.style.display = 'none';
-        } else {
-          let dateOfCompletetion = new Date(dateInput.value)
-          highPeak._status.isCompleted = true;
-          highPeak._status.dateCompleted = `${dateOfCompletetion.getMonth() + 1}.${dateOfCompletetion.getDate()}.${dateOfCompletetion.getFullYear()}`;
-          view.displayHighPeaks();
-        }
-      };
-    })
-  }
+// Handle complete icon click
+function clickComplete(highPeakName) {
+  highPeaks.forEach(highPeak => {
+    if (highPeak._name === highPeakName) {
+      let dateInput = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=completed-form] input`);
+      if (highPeak._status.isCompleted === false && dateInput.value === '') {
+        return dateInput.parentElement.style.display = 'none';
+      } else {
+        let dateOfCompletetion = new Date(dateInput.value)
+        highPeak._status.isCompleted = true;
+        highPeak._status.dateCompleted = `${dateOfCompletetion.getMonth() + 1}.${dateOfCompletetion.getDate()}.${dateOfCompletetion.getFullYear()}`;
+        view.displayHighPeaks();
+      }
+    };
+  })
 }
 
+// Update completed counters
+function updateCompletedCounters() {
+  let completedCount = 0;
+  let notCompletedCount = 0;
+  highPeaks.forEach(highPeak => {
+    if (highPeak._status.isCompleted === true) {
+      completedCount ++
+    } else {
+      notCompletedCount ++
+    }
+  })
+  document.querySelector("span.complete-count").innerHTML = completedCount;
+  document.querySelector("span.incomplete-count").innerHTML = notCompletedCount;
+}
+
+// UI view functions
 const view = {
   displayHighPeaks: function(sortOption) {
     highPeaksTable.innerHTML = '';
@@ -116,14 +139,14 @@ const view = {
     highPeaks.sort(sort[sortOption]).forEach((highPeak, i) => {
       this.createHighPeakTr(highPeak, i);
     });
-    this.updateCompletedCounters();
+
+    updateCompletedCounters();
   },
 
   createHighPeakTr: function(highPeak, i) {
     let highPeakTr = document.createElement("tr");
     highPeakTr.id = highPeak._nameFormatted;
     highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
-    // highPeakTr.innerHTML = `<td class='number'>${i + 1}</td><td class='name'>${highPeak._name}</td><td class='elevation'>${highPeak._elevation}'</td><td class='date-completed'>${highPeak._status.dateCompleted}</td><td class='is-completed'></td><td class='completed-form'><div></div></td>`;
     highPeaksTable.appendChild(highPeakTr);
 
     let completedIconTd = document.querySelector(`tr[id=${highPeak._nameFormatted}] td[class=is-completed]`);
@@ -141,21 +164,12 @@ const view = {
       if (highPeak._status.isCompleted === false) {
         completedFormTd.style.display = completedFormTd.style.display === 'none' ? 'block' : 'none';
 
-
-        // document.querySelectorAll("tr").forEach(tr => {
-        //   if (tr.id != highPeak._nameFormatted) {
-        //     document.querySelector(`tr[id=${tr.id}] td[class=completed-form] div`).style.display = 'none';
-        //   }
-        // })
-
         let allTr = document.querySelectorAll("tr");
         for (i = 1; i < allTr.length; i++) {
           if (allTr[i].id != highPeak._nameFormatted) {
             document.querySelector(`tr[id=${allTr[i].id}] td[class=completed-form] div`).style.display = 'none';
           }
         }
-
-
 
       } else if (highPeak._status.isCompleted === true) {
         highPeak._status.isCompleted = false
@@ -173,32 +187,11 @@ const view = {
     let completeButton = document.createElement("button");
     completeButton.textContent = "Complete";
     completeButton.addEventListener("click", function() {
-      handlers.clickComplete(highPeak._name);
+      clickComplete(highPeak._name);
     });
 
     return [dateCompletedInput, completeButton]
-  },
-
-  updateCompletedCounters: function() {
-    let completedCount = 0;
-    let notCompletedCount = 0;
-    highPeaks.forEach(highPeak => {
-      if (highPeak._status.isCompleted === true) {
-        completedCount ++
-      } else {
-        notCompletedCount ++
-      }
-    })
-    document.querySelector("span.complete-count").innerHTML = completedCount;
-    document.querySelector("span.incomplete-count").innerHTML = notCompletedCount;
-  },
-
-  setupEventListeners: function() {
-    sortSelect.addEventListener("change", () => {
-      this.displayHighPeaks(sortSelect.value);
-    })
   }
 }
 
 view.displayHighPeaks();
-view.setupEventListeners();
