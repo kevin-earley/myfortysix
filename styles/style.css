@@ -14,7 +14,7 @@ html {
 
 body {
   font-family: 'Roboto', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 400;
 
   padding: 3rem;
@@ -25,37 +25,30 @@ p#sort-by-label {
   display: inline;
 }
 
-select#sort-by-select {
-  margin-bottom: 1rem;
-}
-
 th {
-  font-size: 1.2rem;
   text-align: left;
 }
 
-td.number {
-  width: 6rem;
+th, td {
+  padding: .4rem 1.2rem;
 }
 
-td.name {
-  width: 30rem;
+tr td:nth-of-type(1) {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+th:nth-of-type(2),
+tr td:nth-of-type(2) {
   font-weight: 700;
+  padding-left: 0;
 }
 
-td.elevation {
-  width: 9rem;
+#container-complete-form {
+  border: black solid 1px;
+  margin: 10px 0 20px 0;
 }
 
-td.date-completed {
-  width: 12rem;
-}
-
-td.is-completed {
-  text-align: center;
-  font-size: 2rem;
-}
-
-td.completed-form {
-  width: 24rem;
+#complete-form {
+  padding: 1.5rem;
 }

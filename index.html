@@ -8,7 +8,7 @@
 <body>
 
 	<div class="container">
-		<div class="header">
+		<!-- <div class="header">
 			<div class="header-counters">
 				<p>Complete: <span class="complete-count">0</span></p>
 				<p>Incomplete: <span class="incomplete-count">0</span></p>
@@ -22,15 +22,21 @@
 					<option value="byCompleted">Completed</option>
 				</select>
 			</div>
+		</div> -->
+		<div id="container-complete-form" style="display: none">
+			<form id="complete-form">
+				<input type="date" class="date"></input>
+				<input type="submit" value="Submit" class="submit">
+				<input type="submit" value="Cancel" class="cancel">
+			</form>
 		</div>
 		<table>
 			<thead>
 				<tr>
+					<th></th>
 					<th>Name</th>
 					<th>Elevation</th>
 					<th>Date Completed</th>
-					<th>Complete</th>
-					<th></th>
 				</tr>
 			</thead>
 			<tbody id="high-peaks-list"></tbody>

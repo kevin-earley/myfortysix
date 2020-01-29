@@ -1,4 +1,6 @@
+const completeFormContainer = document.querySelector('#container-complete-form');
 const highPeaks = [];
+let currentHighPeak;
 
 class HighPeak {
   constructor(name, elevation) {
@@ -10,9 +12,9 @@ class HighPeak {
     }
   }
 
-  markComplete(completionDate) {
+  markComplete(date) {
     this.status.isCompleted = true,
-    this.status.dateCompleted = `${completionDate.getMonth() + 1}.${completionDate.getDate()}.${completionDate.getFullYear()}`;;
+    this.status.dateCompleted = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear()}`;
   }
   
   markIncomplete() {
@@ -33,72 +35,75 @@ class UI {
       // Set icon to complete or incomplete
       const icon = highPeak.status.isCompleted ? 'fas fa-check-circle complete-icon' : 'far fa-circle complete-icon'
   
-      // Insert columns and completion form
+      // Insert columns
       row.innerHTML = `
-        <td>${highPeak.name}</td>
-        <td>${highPeak.elevation}</td>
-        <td>${highPeak.status.dateCompleted}</td>
         <td><i class=\"${icon}\"></i></td>
-        <td>
-          <form style="display:none">
-            <input type="date"></input>
-            <input type="submit" value="Submit" class="submit">
-          </form>
-        </td>
+        <td>${highPeak.name}</td>
+        <td>${highPeak.elevation}'</td>
+        <td>${highPeak.status.dateCompleted}</td>
       `;
 
       highPeaksList.appendChild(row);
     })
   }
 
-  toggleCompletionForm(completionForm) {
-    // Toggle form display
-    if (completionForm.style.display === 'none') {
-      completionForm.style.display = 'block';
-    } else {
-      completionForm.style.display = 'none';
-    }
-
-    // Hide previous form before displaying new form
-    const allForms = document.querySelectorAll("form");
-    allForms.forEach(function(form) {
-      form.style.display = 'none';
-    });
-  }
-
-  handleCompletionSubmit(target, completionDate) {
-    const highPeakRow = target.parentElement.parentElement.parentElement.children[0].textContent;
+  submitCompleteForm() {
+    const dateCompleted = new Date(document.querySelector('.date').value);
 
     highPeaks.forEach(function(highPeak) {
-      if (highPeak.name === highPeakRow) {
+      if (highPeak.name === currentHighPeak) {
         if (highPeak.status.isCompleted === true) {
           highPeak.markIncomplete();
         } else {
-          highPeak.markComplete(completionDate);
+          highPeak.markComplete(dateCompleted);
         }
       }
     })
+
+    // Clear date input and hide form
+    document.querySelector('.date').value = '';
+    completeFormContainer.style.display = 'none';
+  }
+
+  cancelCompleteForm() {
+    currentHighPeak = '';
+    completeFormContainer.style.display = 'none';
+  }
+
+  clickCompleteIcon(highPeakRow) {
+    currentHighPeak = highPeakRow;
+    completeFormContainer.style.display = 'block';
   }
 }
 
-// Event listeners
-document.getElementById('high-peaks-list').addEventListener('click', function(e){
-  const ui = new UI;
+const ui = new UI;
 
-  if (e.target.className === 'submit') {
-    const completionDate = new Date(e.target.parentElement.children[0].value);
-    ui.handleCompletionSubmit(e.target, completionDate);
-    ui.displayHighPeaks();
-    e.preventDefault();
-  }
 
-  if (e.target.classList.contains('complete-icon')) {
-    const completionForm = e.target.parentElement.parentElement.children[4].children[0];
-    ui.toggleCompletionForm(completionForm);
+
+// Click submit event listener
+document.querySelector('.submit').addEventListener('click', function(e) {
+  ui.submitCompleteForm();
+  ui.displayHighPeaks();
+  e.preventDefault();
+})
+
+// Click cancel event listener
+document.querySelector('.cancel').addEventListener('click', function(e) {
+  ui.cancelCompleteForm();
+  e.preventDefault();
+})
+
+// Click complete icon event listener
+document.querySelector('#high-peaks-list').addEventListener('click', function(e){
+  if (e.target.classList.contains('complete-icon') && completeFormContainer.style.display === 'none') {
+    const highPeakRow = e.target.parentElement.parentElement.children[1].textContent;
+    ui.clickCompleteIcon(highPeakRow);
   }
 });
 
-// Create HighPeak objs and call displayHighPeaks
+
+
+// Create HighPeak objs
 function createHighPeak(name, elevation) {
   highPeaks.push(new HighPeak(name, elevation));
 }
@@ -150,5 +155,4 @@ createHighPeak('Cliff Mountain', 3960);
 createHighPeak('Nye Mountain', 3895);
 createHighPeak('Couchsachraga Peak Mountain', 3820);
 
-const ui = new UI;
 ui.displayHighPeaks();
