@@ -44,11 +44,43 @@ tr td:nth-of-type(2) {
   padding-left: 0;
 }
 
-#container-complete-form {
-  border: black solid 1px;
-  margin: 10px 0 20px 0;
+h2 {
+  margin-bottom: 10px;
 }
 
-#complete-form {
+.alert {
+  color: #fff;
+  width: 42rem;
   padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 10px;
+}
+
+.alert-success {
+  background: #228B22;
+}
+
+.alert-error {
+  background: #DC143C;
+}
+
+#container-complete-form {
+  width: 42rem;
+  padding: 1.5rem;
+  border: black solid 1px;
+  border-radius: 1rem;
+  margin-bottom: 10px;
+}
+
+#container-header-counters {
+  width: 42rem;
+  padding: 1.5rem;
+  border: black solid 1px;
+  border-radius: 1rem;
+  margin-bottom: 10px;
+}
+
+.complete-count,
+.incomplete-count {
+  font-weight: 700;
 }
