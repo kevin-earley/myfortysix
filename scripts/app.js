@@ -1,5 +1,5 @@
 const completeFormContainer = document.querySelector('#container-complete-form');
-const highPeaks = [];
+let highPeaks = [];
 let currentHighPeak;
 
 class HighPeak {
@@ -14,7 +14,7 @@ class HighPeak {
 
   markComplete(date) {
     this.status.isCompleted = true,
-    this.status.dateCompleted = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear()}`;
+    this.status.dateCompleted = date;
   }
   
   markIncomplete() {
@@ -36,13 +36,20 @@ class UI {
       const completeIcon = 'fas fa-check-circle complete-icon';
       const incompleteIcon = 'far fa-circle incomplete-icon';
       const icon = highPeak.status.isCompleted ? completeIcon : incompleteIcon;
+
+      let formattedDate;
+      if (highPeak.status.dateCompleted !== 'incomplete') {
+        formattedDate = `${highPeak.status.dateCompleted.getMonth() + 1}.${highPeak.status.dateCompleted.getDate()}.${highPeak.status.dateCompleted.getFullYear()}`;
+      } else {
+        formattedDate = highPeak.status.dateCompleted;
+      }
   
       // Insert columns
       row.innerHTML = `
         <td><i class=\"${icon}\"></i></td>
         <td>${highPeak.name}</td>
         <td>${highPeak.elevation}'</td>
-        <td>${highPeak.status.dateCompleted}</td>
+        <td>${formattedDate}</td>
       `;
 
       // Append row to table body
@@ -141,10 +148,10 @@ class UI {
     if (sortOption === 'byName') {
       highPeaks.sort(function(a, b) {
         if ( a.name < b.name ) {
-          return (aZ ? -1 : 1);
+          return (aToZ ? -1 : 1);
         }
         if ( a.name > b.name ) {
-          return (aZ ? 1 : -1);
+          return (aToZ ? 1 : -1);
         }
         return 0;
       })
@@ -152,18 +159,27 @@ class UI {
 
     if (sortOption === 'byElevation') {
       highPeaks.sort(function(a, b) {
-        return (highLow ? b.elevation - a.elevation : a.elevation - b.elevation);
+        return (highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
       })
     }
 
     if (sortOption === 'byCompleted') {
-      highPeaks.sort(function(a, b) {
-        return (completeIncomplete ? new Date(b.status.dateCompleted) - new Date(a.status.dateCompleted) : new Date(a.status.dateCompleted) - new Date(b.status.dateCompleted));
+      const highPeaksComplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
+      const highPeaksIncomplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
+
+      // Do not change latestToOldest boolean if highPeaksComplete is empty
+      if (highPeaksComplete.length === 0) {
+        return latestToOldest = false;
+      }
+
+      highPeaksComplete.sort(function(a, b) {
+        return (latestToOldest ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
       })
+
+      highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
     }
   }
 }
-
 
 // UI Event Listeners
 const ui = new UI;
@@ -182,27 +198,28 @@ document.querySelector('.cancel').addEventListener('click', function(e) {
 })
 
 // Sort by Name
-let aZ = false;
+let aToZ = false;
 document.querySelector('#th-name').addEventListener('click', function(e) {
-  aZ = !aZ;
+  aToZ = !aToZ;
   ui.sortBy('byName');
   ui.displayHighPeaks();
 })
 
 // Sort by Elevation
-let highLow = true;
+let highToLow = false;
 document.querySelector('#th-elevation').addEventListener('click', function(e) {
-  highLow = !highLow;
+  highToLow = !highToLow;
   ui.sortBy('byElevation');
   ui.displayHighPeaks();
 })
 
 // Sort by Completed
-let completeIncomplete = true;
+let latestToOldest = false;
 document.querySelector('#th-date-completed').addEventListener('click', function(e) {
-  completeIncomplete = !completeIncomplete;
+  latestToOldest = !latestToOldest;
   ui.sortBy('byCompleted');
   ui.displayHighPeaks();
+  console.log(latestToOldest)
 })
 
 document.querySelector('#high-peaks-list').addEventListener('click', function(e){
@@ -219,8 +236,6 @@ document.querySelector('#high-peaks-list').addEventListener('click', function(e)
     ui.displayHighPeaks();
   }
 });
-
-
 
 // Create HighPeak objs
 function createHighPeak(name, elevation) {
