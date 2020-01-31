@@ -37,12 +37,10 @@ class UI {
       const incompleteIcon = 'far fa-circle incomplete-icon';
       const icon = highPeak.status.isCompleted ? completeIcon : incompleteIcon;
 
-      let formattedDate;
-      if (highPeak.status.dateCompleted !== 'incomplete') {
-        formattedDate = `${highPeak.status.dateCompleted.getMonth() + 1}.${highPeak.status.dateCompleted.getDate()}.${highPeak.status.dateCompleted.getFullYear()}`;
-      } else {
-        formattedDate = highPeak.status.dateCompleted;
-      }
+      // Format date display for UI
+      let formattedDate = highPeak.status.dateCompleted !== 'incomplete' ?
+      `${highPeak.status.dateCompleted.getMonth() + 1}.${highPeak.status.dateCompleted.getDate()}.${highPeak.status.dateCompleted.getFullYear()}` :
+      highPeak.status.dateCompleted;
   
       // Insert columns
       row.innerHTML = `
@@ -68,21 +66,17 @@ class UI {
     if (dateInput !== '') {
       highPeaks.forEach(function(highPeak) {
         if (highPeak.name === currentHighPeak) {
-          if (highPeak.status.isCompleted === true) {
-            highPeak.markIncomplete();
-          } else {
-            highPeak.markComplete(dateCompleted);
-          }
+          highPeak.markComplete(dateCompleted);
+  
+          // Show success alert
+          ui.showAlert(`Congratulations! You summited ${currentHighPeak}!`, 'alert-success');
+
+          // Clear currentHighPeak, date input and hide form
+          currentHighPeak = '';
+          document.querySelector('.date').value = '';
+          completeFormContainer.style.display = 'none';
         }
       })
-
-      // Show success alert
-      this.showAlert(`Congratulations! You summited ${currentHighPeak}!`, 'alert-success');
-
-      // Clear currentHighPeak, date input and hide form
-      currentHighPeak = '';
-      document.querySelector('.date').value = '';
-      completeFormContainer.style.display = 'none';
     } else {
       // Show error alert if date input value is empty
       this.showAlert('Please enter date', 'alert-error');
@@ -105,9 +99,7 @@ class UI {
   removeCompleteStatus(highPeakRow) {
     highPeaks.forEach(function(highPeak) {
       if (highPeak.name === highPeakRow) {
-        if (highPeak.status.isCompleted === true) {
-          highPeak.markIncomplete();
-        }
+        highPeak.markIncomplete();
       }
     })
     this.showAlert(`${highPeakRow} set back to incomplete`, 'alert-success')
@@ -117,11 +109,7 @@ class UI {
     let completedCount = 0;
     let notCompletedCount = 0;
     highPeaks.forEach(function(highPeak) {
-      if (highPeak.status.isCompleted === true) {
-        completedCount ++
-      } else {
-        notCompletedCount ++
-      }
+      highPeak.status.isCompleted ? completedCount ++ : notCompletedCount ++;
     })
     document.querySelector("span.complete-count").textContent = completedCount;
     document.querySelector("span.incomplete-count").textContent = notCompletedCount;
@@ -145,38 +133,43 @@ class UI {
   }
 
   sortBy(sortOption) {
-    if (sortOption === 'byName') {
-      highPeaks.sort(function(a, b) {
-        if ( a.name < b.name ) {
-          return (aToZ ? -1 : 1);
+    switch(sortOption) {
+      case 'byName':
+        highPeaks.sort(function(a, b) {
+          if ( a.name < b.name ) {
+            return (aToZ ? -1 : 1);
+          } else if ( a.name > b.name ) {
+            return (aToZ ? 1 : -1);
+          } else {
+            return 0;
+          }
+        })
+        break;
+
+      case 'byElevation':
+        highPeaks.sort(function(a, b) {
+          return (highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
+        })
+        break;
+
+      case 'byCompleted':
+        const highPeaksComplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
+        const highPeaksIncomplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
+  
+        // Do not change latestToOldest boolean if highPeaksComplete is empty
+        if (highPeaksComplete.length === 0) {
+          return latestToOldest = false;
         }
-        if ( a.name > b.name ) {
-          return (aToZ ? 1 : -1);
-        }
-        return 0;
-      })
-    }
+  
+        highPeaksComplete.sort(function(a, b) {
+          return (latestToOldest ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
+        })
+  
+        highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
+        break;
 
-    if (sortOption === 'byElevation') {
-      highPeaks.sort(function(a, b) {
-        return (highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
-      })
-    }
-
-    if (sortOption === 'byCompleted') {
-      const highPeaksComplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
-      const highPeaksIncomplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
-
-      // Do not change latestToOldest boolean if highPeaksComplete is empty
-      if (highPeaksComplete.length === 0) {
-        return latestToOldest = false;
-      }
-
-      highPeaksComplete.sort(function(a, b) {
-        return (latestToOldest ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
-      })
-
-      highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
+      default:
+        break;
     }
   }
 }
@@ -219,7 +212,6 @@ document.querySelector('#th-date-completed').addEventListener('click', function(
   latestToOldest = !latestToOldest;
   ui.sortBy('byCompleted');
   ui.displayHighPeaks();
-  console.log(latestToOldest)
 })
 
 document.querySelector('#high-peaks-list').addEventListener('click', function(e){
