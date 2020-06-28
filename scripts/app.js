@@ -217,6 +217,8 @@ document.querySelector('#th-date-completed').addEventListener('click', function(
 document.querySelector('#high-peaks-list').addEventListener('click', function(e){
   const highPeakRow = e.target.parentElement.parentElement.children[1].textContent;
 
+  console.log(highPeakRow)
+
   // Click to complete icon event listener
   if (e.target.classList.contains('incomplete-icon') && completeFormContainer.style.display === 'none') {
     ui.clickCompleteIcon(highPeakRow);
