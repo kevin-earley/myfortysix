@@ -218,7 +218,8 @@ const UICtrl = (function() {
     sortByName: '#th-name',
     sortByElevation: '#th-elevation',
     sortByDateCompleted: '#th-date-completed',
-    highPeaksTableBody: '#high-peaks-table-body'
+    highPeaksTableBody: '#high-peaks-table-body',
+    alertDiv: '.alert'
   }
 
   // Public Methods
@@ -255,8 +256,13 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.statusFormContainer).style.display = 'block';
       document.querySelector(UISelectors.statusFormHighPeakName).textContent = HighPeakCtrl.getCurrentHighPeak().name;
       document.querySelector(UISelectors.statusFormDateInput).value = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted !== null ?
-      HighPeakCtrl.getCurrentHighPeak().status.dateCompleted.toISOString().slice(0,10)
-      : null;
+        HighPeakCtrl.getCurrentHighPeak().status.dateCompleted.toISOString().slice(0,10) : null;
+
+      document.querySelector(UISelectors.statusFormSubmitBtn).value = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted === null ?
+        'Complete' : 'Update';
+
+      document.querySelector(UISelectors.statusFormResetBtn).style.display = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted !== null ?
+        'inline' : 'none';
     },
 
     hideStatusForm: function() {
@@ -283,7 +289,7 @@ const UICtrl = (function() {
   
       // Timeout alert div
       setTimeout(function(){
-        document.querySelector('.alert').remove();
+        document.querySelector(UISelectors.alertDiv).remove();
       }, 3000);
     },
 
