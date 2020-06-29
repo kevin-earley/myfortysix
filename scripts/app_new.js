@@ -1,7 +1,7 @@
-// Sort option variables
+// Global variables for sort options
 let aToZ = false;
-let highToLow = false;
-let latestToOldest = false;
+    highToLow = false;
+    newToOld = false;
 
 // *****
 // STORAGE CONTROLLER
@@ -94,20 +94,20 @@ const HighPeakCtrl = (function() {
 
   // Public Methods
   return {
-    getData: function() {
-      return data;
-    },
-
     getHighPeaks: function() {
       return data.highPeaks;
     },
 
-    getTotalCompleted: function() {
-      return data.totalCompleted;
+    getCurrentHighPeak: function() {
+      return data.currentHighPeak;
     },
 
-    updateCurrentHighPeak: function(highPeakName) {
+    updateCurrentHighPeakState: function(highPeakName) {
       data.currentHighPeak = highPeakName;
+    },
+
+    clearCurrentHighPeakState: function() {
+      data.currentHighPeak = null;
     },
 
     updateCurrentHighPeakStatus: function(date) {
@@ -126,12 +126,16 @@ const HighPeakCtrl = (function() {
       })
     },
 
+    getTotalCompleted: function() {
+      return data.totalCompleted;
+    },
+
     updateTotalCompleted: function() {
       let completedCount = 0;
 
       data.highPeaks.forEach(function(highPeak) {
         if (highPeak.status.isCompleted) {
-          completedCount ++
+          completedCount++
         }
       })
 
@@ -162,13 +166,13 @@ const HighPeakCtrl = (function() {
           const highPeaksComplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
           const highPeaksIncomplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
     
-          // Do not change latestToOldest boolean if highPeaksComplete is empty
+          // Do not change newToOld boolean if highPeaksComplete is empty
           if (highPeaksComplete.length === 0) {
-            return latestToOldest = false;
+            return newToOld = false;
           }
     
           highPeaksComplete.sort(function(a, b) {
-            return (latestToOldest ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
+            return (newToOld ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
           })
     
           data.highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
@@ -177,8 +181,11 @@ const HighPeakCtrl = (function() {
         default:
           break;
       }
-    }
+    },
 
+    getData: function() {
+      return data;
+    }
   }
 })();
 
@@ -192,7 +199,7 @@ const HighPeakCtrl = (function() {
 
 const UICtrl = (function() {
   const UISelectors = {
-    highPeaksTableBody: '#high-peaks-table-body',
+    mainContainer: '#main-container',
     statusFormContainer: '#container-status-form',
     statusFormHighPeakName: '#high-peak-name',
     statusFormDateInput: '.date',
@@ -203,7 +210,8 @@ const UICtrl = (function() {
     incompleteCount: 'span.incomplete-count',
     sortByName: '#th-name',
     sortByElevation: '#th-elevation',
-    sortByDateCompleted: '#th-date-completed'
+    sortByDateCompleted: '#th-date-completed',
+    highPeaksTableBody: '#high-peaks-table-body'
   }
 
   // Public Methods
@@ -240,7 +248,7 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.statusFormContainer).style.display = 'block';
       document.querySelector(UISelectors.statusFormHighPeakName).textContent = currentHighPeak.name;
       document.querySelector(UISelectors.statusFormDateInput).value = currentHighPeak.status.dateCompleted !== null ?
-      new Date(currentHighPeak.status.dateCompleted).toISOString().slice(0,10)
+      currentHighPeak.status.dateCompleted.toISOString().slice(0,10)
       : null;
     },
 
@@ -254,9 +262,27 @@ const UICtrl = (function() {
       return document.querySelector(UISelectors.statusFormDateInput).value;
     },
 
-    updateCompletedTotals: function(totalCompleted) {
+    updateCompleteTotals: function(totalCompleted) {
       document.querySelector(UISelectors.completeCount).textContent = totalCompleted;
       document.querySelector(UISelectors.incompleteCount).textContent = 46 - totalCompleted;
+    },
+
+    showAlert(message, className) {
+      console.log(message, className);
+      // Create alert div
+      const div = document.createElement('div');
+      div.className = `alert ${className}`;
+      div.appendChild(document.createTextNode(message));
+  
+      // Insert alert div into DOM
+      const container = document.querySelector(UISelectors.mainContainer);
+      const form = document.querySelector(UISelectors.statusFormContainer);
+      container.insertBefore(div, form);
+  
+      // Timeout alert div
+      setTimeout(function(){
+        document.querySelector('.alert').remove();
+      }, 3000);
     },
 
     getSelectors: function() {
@@ -278,16 +304,16 @@ const App = (function(HighPeakCtrl, UICtrl) {
   const UISelectors = UICtrl.getSelectors();
 
   const loadEventListeners = function() {
-    // Click status icon event
+    // Click status icon
     document.querySelector(UISelectors.highPeaksTableBody).addEventListener('click', clickStatusIcon);
 
-    // Click submit status form
+    // Click Submit status form
     document.querySelector(UISelectors.statusFormSubmitBtn).addEventListener('click', submitStatusForm);
 
-    // Click reset status form
+    // Click Reset status form
     document.querySelector(UISelectors.statusFormResetBtn).addEventListener('click', resetStatusForm);
 
-    // Click close status form
+    // Click Close status form
     document.querySelector(UISelectors.statusFormCancelBtn).addEventListener('click', closeStatusForm);
 
     // Click Sort By Name
@@ -301,7 +327,7 @@ const App = (function(HighPeakCtrl, UICtrl) {
   }
 
   const clickStatusIcon = function(e) {
-    if (e.target.classList.contains('status-icon')) {
+    if (e.target.classList.contains('status-icon') && document.querySelector(UISelectors.statusFormContainer).style.display === 'none') {
       // Get high peak name of clicked row
       let clickedHighPeak = e.target.parentElement.parentElement.children[1].textContent;
 
@@ -313,8 +339,8 @@ const App = (function(HighPeakCtrl, UICtrl) {
         }
       })
 
-      // Set current high peak to clicked row
-      HighPeakCtrl.updateCurrentHighPeak(newCurrentHighPeak.name);
+      // Set current high peak state to clicked row
+      HighPeakCtrl.updateCurrentHighPeakState(newCurrentHighPeak.name);
 
       // Show status form
       UICtrl.showStatusForm(newCurrentHighPeak);
@@ -327,35 +353,66 @@ const App = (function(HighPeakCtrl, UICtrl) {
     if (currentHighPeakDateInput !== '') {
       // Update current high peak status in data structure
       HighPeakCtrl.updateCurrentHighPeakStatus(currentHighPeakDateInput);
+
+      // Update total completed in data structure
       HighPeakCtrl.updateTotalCompleted();
 
       // Update high peaks table
       UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
 
-      UICtrl.updateCompletedTotals(HighPeakCtrl.getTotalCompleted());
+      // Update UI complete totals
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
+
+      // Show success alert
+      UICtrl.showAlert(`Congratulations! You summited ${HighPeakCtrl.getCurrentHighPeak()}!`, 'alert-success');
+
+      // Clear Current High Peak State
+      HighPeakCtrl.clearCurrentHighPeakState();
 
       // Close status form
       closeStatusForm();
+    } else {
+      // Show error alert
+      UICtrl.showAlert('Please enter date', 'alert-error');
     }
 
     e.preventDefault();
   }
 
   const resetStatusForm = function(e) {
-    HighPeakCtrl.resetCurrentHighPeakStatus();
-    HighPeakCtrl.updateTotalCompleted();
+    let currentHighPeakDateInput = UICtrl.getStatusFormDateInputValue()
 
-    // Update high peaks table
-    UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+    if (currentHighPeakDateInput !== '') {
+      // Remove date and complete status in data structure
+      HighPeakCtrl.resetCurrentHighPeakStatus();
 
-    UICtrl.updateCompletedTotals(HighPeakCtrl.getTotalCompleted());
-    
+      // Update total completed in data structure
+      HighPeakCtrl.updateTotalCompleted();
 
-    // Close status form
-    closeStatusForm();
+      // Update high peaks table
+      UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+
+      // Update UI complete totals
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
+
+      // Show success alert
+      UICtrl.showAlert(`${HighPeakCtrl.getCurrentHighPeak()} has been succesfully reset`, 'alert-success');
+
+      // Clear Current High Peak State
+      HighPeakCtrl.clearCurrentHighPeakState();
+      
+      // Close status form
+      closeStatusForm();
+    } else {
+      // Show error alert
+      UICtrl.showAlert(`${HighPeakCtrl.getCurrentHighPeak()} is already incomplete`, 'alert-error');
+    }
   }
 
   const closeStatusForm = function() {
+    // Clear Current High Peak State
+    HighPeakCtrl.clearCurrentHighPeakState();
+
     UICtrl.hideStatusForm();
   }
 
@@ -376,7 +433,7 @@ const App = (function(HighPeakCtrl, UICtrl) {
   }
 
   const sortByDateCompleted = function() {
-    latestToOldest = !latestToOldest;
+    newToOld = !newToOld;
     HighPeakCtrl.sortHighPeaks('byCompleted');
 
     // Update high peaks table
@@ -386,12 +443,11 @@ const App = (function(HighPeakCtrl, UICtrl) {
   // Public Methods
   return {
     init: function() {
-      // Fetch items from data structure
-      const highPeaks = HighPeakCtrl.getHighPeaks();
+      // Populate high peaks list
+      UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
 
-      // Populate list with items
-      UICtrl.populateHighPeakList(highPeaks);
-      UICtrl.updateCompletedTotals(HighPeakCtrl.getTotalCompleted());
+      // Update UI complete totals
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
 
       // Load event listeners
       loadEventListeners();
