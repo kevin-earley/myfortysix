@@ -1,295 +1,445 @@
-const completeFormContainer = document.querySelector('#container-complete-form');
-let highPeaks = [];
-let currentHighPeak;
+// Global variables for sort options
+let aToZ = false;
+    highToLow = false;
+    newToOld = false;
 
-class HighPeak {
-  constructor(name, elevation) {
-    this.name = name;
-    this.elevation = elevation;
-    this.status = {
-      isCompleted: false,
-      dateCompleted: 'incomplete'
+
+
+// HighPeak Controller
+const HighPeakCtrl = (function() {
+  // HighPeak Class
+  class HighPeak {
+    constructor(name, elevation) {
+      this.name = name;
+      this.elevation = elevation;
+      this.status = {
+        isCompleted: false,
+        dateCompleted: null
+      }
+    }
+  
+    markComplete(date) {
+      this.status.isCompleted = true;
+      this.status.dateCompleted = date;
+    }
+    
+    markIncomplete() {
+      this.status.isCompleted = false;
+      this.status.dateCompleted = null;
     }
   }
 
-  markComplete(date) {
-    this.status.isCompleted = true,
-    this.status.dateCompleted = date;
+  // Data Structure / State
+  const data = {
+    highPeaks: [
+      new HighPeak('Mount Marcy', 5344),
+      new HighPeak('Algonquin Peak', 5114),
+      new HighPeak('Mount Haystack', 4960),
+      new HighPeak('Mount Skylight', 4926),
+      new HighPeak('Whiteface Mountain', 4867),
+      new HighPeak('Dix Mountain', 4857),
+      new HighPeak('Gray Peak', 4840),
+      new HighPeak('Iroquois Peak', 4840),
+      new HighPeak('Basin Mountain', 4827),
+      new HighPeak('Gothics Mountain', 4736),
+      new HighPeak('Mount Colden', 4714),
+      new HighPeak('Giant Mountain', 4627),
+      new HighPeak('Nippletop Mountain', 4620),
+      new HighPeak('Santanoni Peak', 4607),
+      new HighPeak('Mount Redfield', 4606),
+      new HighPeak('Wright Peak', 4580),
+      new HighPeak('Saddleback Mountain', 4515),
+      new HighPeak('Panther Peak', 4442),
+      new HighPeak('Tabletop Mountain', 4427),
+      new HighPeak('Rocky Peak Ridge', 4420),
+      new HighPeak('Macomb Mountan', 4405),
+      new HighPeak('Armstrong Mountan', 4400),
+      new HighPeak('Hough Peak Mountan', 4400),
+      new HighPeak('Seward Mountan', 4361),
+      new HighPeak('Mount Marshall', 4360),
+      new HighPeak('Allen Mountain', 4340),
+      new HighPeak('Esther Mountain', 4340),
+      new HighPeak('Big Slide Mountain', 4240),
+      new HighPeak('Upper Wolfjaw Mountain', 4185),
+      new HighPeak('Lower Wolfjaw Mountain', 4175),
+      new HighPeak('Street Mountain', 4166),
+      new HighPeak('Phelps Mountain', 4161),
+      new HighPeak('Mount Donaldson', 4140),
+      new HighPeak('Seymour Mountain', 4120),
+      new HighPeak('Sawteeth Mountain', 4100),
+      new HighPeak('Cascade Mountain', 4098),
+      new HighPeak('South Dix Mountain', 4060),
+      new HighPeak('Porter Mountain', 4059),
+      new HighPeak('Mount Colvin', 4057),
+      new HighPeak('Mount Emmons', 4040),
+      new HighPeak('Dial Mountain', 4020),
+      new HighPeak('Grace Peak Mountain', 4012),
+      new HighPeak('Blake Mountain', 3960),
+      new HighPeak('Cliff Mountain', 3960),
+      new HighPeak('Nye Mountain', 3895),
+      new HighPeak('Couchsachraga Peak Mountain', 3820)
+    ],
+    currentHighPeak: null,
+    totalCompleted: 0
   }
-  
-  markIncomplete() {
-    this.status.isCompleted = false,
-    this.status.dateCompleted = 'incomplete';
-  }
-}
 
-class UI {
-  displayHighPeaks(sortBy) {
-    const highPeaksList = document.querySelector('#high-peaks-list');
-    highPeaksList.innerHTML = '';
+  // Public Methods
+  return {
+    getHighPeaks: function() {
+      return data.highPeaks;
+    },
 
-    highPeaks.forEach(function(highPeak) {
-      // Create tr element
-      const row = document.createElement('tr');
+    getCurrentHighPeak: function() {
+      return data.currentHighPeak;
+    },
 
-      // Set icon to complete or incomplete
-      const completeIcon = 'fas fa-check-circle complete-icon';
-      const incompleteIcon = 'far fa-circle incomplete-icon';
-      const icon = highPeak.status.isCompleted ? completeIcon : incompleteIcon;
+    updateCurrentHighPeakState: function(newCurrentHighPeak) {
+      data.currentHighPeak = newCurrentHighPeak;
+    },
 
-      // Format date display for UI
-      let formattedDate = highPeak.status.dateCompleted !== 'incomplete' ?
-      `${highPeak.status.dateCompleted.getMonth() + 1}.${highPeak.status.dateCompleted.getDate()}.${highPeak.status.dateCompleted.getFullYear()}` :
-      highPeak.status.dateCompleted;
-  
-      // Insert columns
-      row.innerHTML = `
-        <td><i class=\"${icon}\"></i></td>
-        <td>${highPeak.name}</td>
-        <td>${highPeak.elevation}'</td>
-        <td>${formattedDate}</td>
-      `;
+    clearCurrentHighPeakState: function() {
+      data.currentHighPeak = null;
+    },
 
-      // Append row to table body
-      highPeaksList.appendChild(row);
-    })
-
-    // Update complete counters
-    this.updateCompletedCounters();
-  }
-
-  submitCompleteForm() {
-    const dateInput = document.querySelector('.date').value
-    const dateCompleted = new Date(dateInput);
-
-    // Update high peak status if date input value is not empty
-    if (dateInput !== '') {
-      highPeaks.forEach(function(highPeak) {
-        if (highPeak.name === currentHighPeak) {
-          highPeak.markComplete(dateCompleted);
-  
-          // Show success alert
-          ui.showAlert(`Congratulations! You summited ${currentHighPeak}!`, 'alert-success');
-
-          // Clear currentHighPeak, date input and hide form
-          currentHighPeak = '';
-          document.querySelector('.date').value = '';
-          completeFormContainer.style.display = 'none';
+    updateCurrentHighPeakStatus: function(date) {
+      data.highPeaks.forEach(function(highPeak) {
+        if (highPeak.name === data.currentHighPeak.name) {
+          highPeak.markComplete(new Date(`${date}T00:00:00`));
         }
       })
-    } else {
-      // Show error alert if date input value is empty
-      this.showAlert('Please enter date', 'alert-error');
-    }
-  }
+    },
 
-  cancelCompleteForm() {
-    currentHighPeak = '';
-    completeFormContainer.style.display = 'none';
-  }
-
-  clickCompleteIcon(highPeakRow) {
-    const UIhighPeakName = document.querySelector("#high-peak-name");
-
-    currentHighPeak = highPeakRow;
-    UIhighPeakName.textContent = currentHighPeak;
-    completeFormContainer.style.display = 'block';
-  }
-
-  removeCompleteStatus(highPeakRow) {
-    highPeaks.forEach(function(highPeak) {
-      if (highPeak.name === highPeakRow) {
-        highPeak.markIncomplete();
-      }
-    })
-    this.showAlert(`${highPeakRow} set back to incomplete`, 'alert-success')
-  }
-
-  updateCompletedCounters() {
-    let completedCount = 0;
-    let notCompletedCount = 0;
-    highPeaks.forEach(function(highPeak) {
-      highPeak.status.isCompleted ? completedCount ++ : notCompletedCount ++;
-    })
-    document.querySelector("span.complete-count").textContent = completedCount;
-    document.querySelector("span.incomplete-count").textContent = notCompletedCount;
-  }
-
-  showAlert(message, className) {
-    // Create alert div
-    const div = document.createElement('div');
-    div.className = `alert ${className}`;
-    div.appendChild(document.createTextNode(message));
-
-    // Insert alert div into DOM
-    const container = document.querySelector('.container');
-    const form = document.querySelector('#container-complete-form');
-    container.insertBefore(div, form);
-
-    // Timeout alert div
-    setTimeout(function(){
-      document.querySelector('.alert').remove();
-    }, 3000);
-  }
-
-  sortBy(sortOption) {
-    switch(sortOption) {
-      case 'byName':
-        highPeaks.sort(function(a, b) {
-          if ( a.name < b.name ) {
-            return (aToZ ? -1 : 1);
-          } else if ( a.name > b.name ) {
-            return (aToZ ? 1 : -1);
-          } else {
-            return 0;
-          }
-        })
-        break;
-
-      case 'byElevation':
-        highPeaks.sort(function(a, b) {
-          return (highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
-        })
-        break;
-
-      case 'byCompleted':
-        const highPeaksComplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
-        const highPeaksIncomplete = highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
-  
-        // Do not change latestToOldest boolean if highPeaksComplete is empty
-        if (highPeaksComplete.length === 0) {
-          return latestToOldest = false;
+    resetCurrentHighPeakStatus: function() {
+      data.highPeaks.forEach(function(highPeak) {
+        if (highPeak.name === data.currentHighPeak.name) {
+          highPeak.markIncomplete();
         }
-  
-        highPeaksComplete.sort(function(a, b) {
-          return (latestToOldest ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
-        })
-  
-        highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
-        break;
+      })
+    },
 
-      default:
-        break;
+    getTotalCompleted: function() {
+      return data.totalCompleted;
+    },
+
+    updateTotalCompleted: function() {
+      let completedCount = 0;
+
+      data.highPeaks.forEach(function(highPeak) {
+        if (highPeak.status.isCompleted) {
+          completedCount++
+        }
+      })
+
+      data.totalCompleted = completedCount;
+    },
+
+    sortHighPeaks: function(sortBy) {
+      switch(sortBy) {
+        case 'byName':
+          data.highPeaks.sort(function(a, b) {
+            if ( a.name < b.name ) {
+              return (aToZ ? -1 : 1);
+            } else if ( a.name > b.name ) {
+              return (aToZ ? 1 : -1);
+            } else {
+              return 0;
+            }
+          })
+          break;
+  
+        case 'byElevation':
+          data.highPeaks.sort(function(a, b) {
+            return (highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
+          })
+          break;
+  
+        case 'byCompleted':
+          const highPeaksComplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
+          const highPeaksIncomplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
+    
+          // Do not change newToOld boolean if highPeaksComplete is empty
+          if (highPeaksComplete.length === 0) {
+            return newToOld = false;
+          }
+    
+          highPeaksComplete.sort(function(a, b) {
+            return (newToOld ? b.status.dateCompleted - a.status.dateCompleted : a.status.dateCompleted - b.status.dateCompleted);
+          })
+    
+          data.highPeaks = highPeaksComplete.concat(highPeaksIncomplete);
+          break;
+  
+        default:
+          break;
+      }
+    },
+
+    getData: function() {
+      return data;
     }
   }
-}
+})();
 
-// UI Event Listeners
-const ui = new UI;
 
-// Click submit event listener
-document.querySelector('.submit').addEventListener('click', function(e) {
-  ui.submitCompleteForm();
-  ui.displayHighPeaks();
-  e.preventDefault();
-})
-
-// Click cancel event listener
-document.querySelector('.cancel').addEventListener('click', function(e) {
-  ui.cancelCompleteForm();
-  e.preventDefault();
-})
-
-// Sort by Name
-let aToZ = false;
-document.querySelector('#th-name').addEventListener('click', function(e) {
-  aToZ = !aToZ;
-  ui.sortBy('byName');
-  ui.displayHighPeaks();
-})
-
-// Sort by Elevation
-let highToLow = false;
-document.querySelector('#th-elevation').addEventListener('click', function(e) {
-  highToLow = !highToLow;
-  ui.sortBy('byElevation');
-  ui.displayHighPeaks();
-})
-
-// Sort by Completed
-let latestToOldest = false;
-document.querySelector('#th-date-completed').addEventListener('click', function(e) {
-  latestToOldest = !latestToOldest;
-  ui.sortBy('byCompleted');
-  ui.displayHighPeaks();
-})
-
-document.querySelector('#high-peaks-list').addEventListener('click', function(e){
-  const highPeakRow = e.target.parentElement.parentElement.children[1].textContent;
-
-  console.log(highPeakRow)
-
-  // Click to complete icon event listener
-  if (e.target.classList.contains('incomplete-icon') && completeFormContainer.style.display === 'none') {
-    ui.clickCompleteIcon(highPeakRow);
-  }
-
-  // Click to incomplete icon event listener
-  if (e.target.classList.contains('complete-icon') && completeFormContainer.style.display === 'none') {
-    ui.removeCompleteStatus(highPeakRow);
-    ui.displayHighPeaks();
-  }
-});
-
-// Create HighPeak objs
-function createHighPeak(name, elevation) {
-  highPeaks.push(new HighPeak(name, elevation));
-}
-
-createHighPeak('Mount Marcy', 5344);
-createHighPeak('Algonquin Peak', 5114);
-createHighPeak('Mount Haystack', 4960);
-createHighPeak('Mount Skylight', 4926);
-createHighPeak('Whiteface Mountain', 4867);
-createHighPeak('Dix Mountain', 4857);
-createHighPeak('Gray Peak', 4840);
-createHighPeak('Iroquois Peak', 4840);
-createHighPeak('Basin Mountain', 4827);
-createHighPeak('Gothics Mountain', 4736);
-createHighPeak('Mount Colden', 4714);
-createHighPeak('Giant Mountain', 4627);
-createHighPeak('Nippletop Mountain', 4620);
-createHighPeak('Santanoni Peak', 4607);
-createHighPeak('Mount Redfield', 4606);
-createHighPeak('Wright Peak', 4580);
-createHighPeak('Saddleback Mountain', 4515);
-createHighPeak('Panther Peak', 4442);
-createHighPeak('Tabletop Mountain', 4427);
-createHighPeak('Rocky Peak Ridge', 4420);
-createHighPeak('Macomb Mountan', 4405);
-createHighPeak('Armstrong Mountan', 4400);
-createHighPeak('Hough Peak Mountan', 4400);
-createHighPeak('Seward Mountan', 4361);
-createHighPeak('Mount Marshall', 4360);
-createHighPeak('Allen Mountain', 4340);
-createHighPeak('Esther Mountain', 4340);
-createHighPeak('Big Slide Mountain', 4240);
-createHighPeak('Upper Wolfjaw Mountain', 4185);
-createHighPeak('Lower Wolfjaw Mountain', 4175);
-createHighPeak('Street Mountain', 4166);
-createHighPeak('Phelps Mountain', 4161);
-createHighPeak('Mount Donaldson', 4140);
-createHighPeak('Seymour Mountain', 4120);
-createHighPeak('Sawteeth Mountain', 4100);
-createHighPeak('Cascade Mountain', 4098);
-createHighPeak('South Dix Mountain', 4060);
-createHighPeak('Porter Mountain', 4059);
-createHighPeak('Mount Colvin', 4057);
-createHighPeak('Mount Emmons', 4040);
-createHighPeak('Dial Mountain', 4020);
-createHighPeak('Grace Peak Mountain', 4012);
-createHighPeak('Blake Mountain', 3960);
-createHighPeak('Cliff Mountain', 3960);
-createHighPeak('Nye Mountain', 3895);
-createHighPeak('Couchsachraga Peak Mountain', 3820);
-
-ui.sortBy('byElevation');
-ui.displayHighPeaks();
-
-// Storgage Controller
-
-// Item Controller
 
 // UI Controller
+const UICtrl = (function() {
+  const UISelectors = {
+    mainContainer: '#main-container',
+    statusFormContainer: '#container-status-form',
+    statusFormHighPeakName: '#high-peak-name',
+    statusFormDateInput: '.date',
+    statusFormSubmitBtn: '.submit',
+    statusFormResetBtn: '.reset',
+    statusFormCancelBtn: '.cancel',
+    completeCount: 'span.complete-count',
+    incompleteCount: 'span.incomplete-count',
+    sortByName: '#th-name',
+    sortByElevation: '#th-elevation',
+    sortByDateCompleted: '#th-date-completed',
+    highPeaksTableBody: '#high-peaks-table-body',
+    alertDiv: '.alert'
+  }
+
+  // Public Methods
+  return {
+    populateHighPeakList: function(highPeaks) {
+      let html = '';
+      const completeIconClass = 'fas fa-check-circle complete',
+            incompleteIconClass = 'far fa-circle incomplete';
+
+      highPeaks.forEach(function(highPeak) {
+        // Set icon class to complete or incomplete
+        let iconClass = highPeak.status.isCompleted ? completeIconClass : incompleteIconClass;
+
+        // Format date completed if complete
+        let formattedDate = highPeak.status.dateCompleted !== null ?
+        `${highPeak.status.dateCompleted.getMonth() + 1}.${highPeak.status.dateCompleted.getDate()}.${highPeak.status.dateCompleted.getFullYear()}`
+        : 'incomplete';
+
+        html += `
+          <tr>
+            <td><i class="${iconClass} status-icon"></i></td>
+            <td>${highPeak.name}</td>
+            <td>${highPeak.elevation}'</td>
+            <td>${formattedDate}</td>
+          </tr>
+        `;
+      });
+
+      // Insert high peaks table rows into table
+      document.querySelector(UISelectors.highPeaksTableBody).innerHTML = html;
+    },
+
+    showStatusForm: function() {
+      document.querySelector(UISelectors.statusFormContainer).style.display = 'block';
+      document.querySelector(UISelectors.statusFormHighPeakName).textContent = HighPeakCtrl.getCurrentHighPeak().name;
+      document.querySelector(UISelectors.statusFormDateInput).value = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted !== null ?
+        HighPeakCtrl.getCurrentHighPeak().status.dateCompleted.toISOString().slice(0,10) : null;
+
+      document.querySelector(UISelectors.statusFormSubmitBtn).value = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted === null ?
+        'Complete' : 'Update';
+
+      document.querySelector(UISelectors.statusFormResetBtn).style.display = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted !== null ?
+        'inline' : 'none';
+    },
+
+    hideStatusForm: function() {
+      document.querySelector(UISelectors.statusFormContainer).style.display = 'none';
+      document.querySelector(UISelectors.statusFormHighPeakName).textContent = '';
+      document.querySelector(UISelectors.statusFormDateInput).value = null;
+    },
+
+    updateCompleteTotals: function(totalCompleted) {
+      document.querySelector(UISelectors.completeCount).textContent = totalCompleted;
+      document.querySelector(UISelectors.incompleteCount).textContent = 46 - totalCompleted;
+    },
+
+    showAlert(message, className) {
+      // Create alert div
+      const div = document.createElement('div');
+      div.className = `alert ${className}`;
+      div.appendChild(document.createTextNode(message));
+  
+      // Insert alert div into DOM
+      const container = document.querySelector(UISelectors.mainContainer);
+      const form = document.querySelector(UISelectors.statusFormContainer);
+      container.insertBefore(div, form);
+  
+      // Timeout alert div
+      setTimeout(function(){
+        document.querySelector(UISelectors.alertDiv).remove();
+      }, 3000);
+    },
+
+    getSelectors: function() {
+      return UISelectors;
+    }
+  }
+})();
+
+
 
 // App Controller
+const App = (function(HighPeakCtrl, UICtrl) {
+  // Get UI Selectors
+  const UISelectors = UICtrl.getSelectors();
+
+  const loadEventListeners = function() {
+    // Click status icon
+    document.querySelector(UISelectors.highPeaksTableBody).addEventListener('click', clickStatusIcon);
+
+    // Click Submit in status form
+    document.querySelector(UISelectors.statusFormSubmitBtn).addEventListener('click', submitStatusForm);
+
+    // Click Reset in status form
+    document.querySelector(UISelectors.statusFormResetBtn).addEventListener('click', resetStatusForm);
+
+    // Click Close in status form
+    document.querySelector(UISelectors.statusFormCancelBtn).addEventListener('click', closeStatusForm);
+
+    // Click Sort By Name
+    document.querySelector(UISelectors.sortByName).addEventListener('click', sortByName);
+
+    // Click Sort By Elevation
+    document.querySelector(UISelectors.sortByElevation).addEventListener('click', sortByElevation);
+
+    // Click Sort By Date Completed
+    document.querySelector(UISelectors.sortByDateCompleted).addEventListener('click', sortByDateCompleted);
+  }
+
+  const clickStatusIcon = function(e) {
+    if (e.target.classList.contains('status-icon') && document.querySelector(UISelectors.statusFormContainer).style.display === 'none') {
+      // Get High Peak name of clicked icon / table row
+      let clickedHighPeak = e.target.parentElement.parentElement.children[1].textContent;
+
+      // Create variable to store new Current High Peak obj
+      let newCurrentHighPeak;
+
+      HighPeakCtrl.getHighPeaks().forEach(function(highPeak) {
+        if (highPeak.name === clickedHighPeak) {
+          return newCurrentHighPeak = highPeak;
+        }
+      })
+
+      // Set Current High Peak state to new Current High Peak obj
+      HighPeakCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
+
+      // Show status form
+      UICtrl.showStatusForm();
+    }
+  }
+
+  const submitStatusForm = function(e) {
+    // Get status form date input
+    let statusFormDateValue = document.querySelector(UISelectors.statusFormDateInput).value;
+
+    // Create variable to store current Is Complete date if date is not null
+    let currentIsCompleteDate;
+    if (HighPeakCtrl.getCurrentHighPeak().status.dateCompleted !== null) {
+      currentIsCompleteDate = HighPeakCtrl.getCurrentHighPeak().status.dateCompleted.toISOString().slice(0,10);
+    }
+
+    if (statusFormDateValue !== '' && statusFormDateValue !== currentIsCompleteDate) {
+      // Update Current High Peak status in data structure
+      HighPeakCtrl.updateCurrentHighPeakStatus(statusFormDateValue);
+
+      // Update Total Completed in data structure
+      HighPeakCtrl.updateTotalCompleted();
+
+      // Update high peaks table
+      UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+
+      // Update UI complete totals
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
+
+      if (currentIsCompleteDate) {
+        UICtrl.showAlert(`${HighPeakCtrl.getCurrentHighPeak().name} succesfully updated!`, 'alert-success');
+      } else {
+        UICtrl.showAlert(`You summited ${HighPeakCtrl.getCurrentHighPeak().name}!`, 'alert-success');
+      }
+
+      // Clear Current High Peak State
+      HighPeakCtrl.clearCurrentHighPeakState();
+
+      // Close status form
+      closeStatusForm();
+    } else if (statusFormDateValue === '') {
+      // Show error alert
+      UICtrl.showAlert('Please enter date', 'alert-error');
+    } else if (statusFormDateValue === currentIsCompleteDate) {
+      UICtrl.showAlert('Please enter a new date in order to update', 'alert-error');
+    }
+
+    e.preventDefault();
+  }
+
+  const resetStatusForm = function(e) {
+    // Get status form date input
+    let statusFormDateValue = document.querySelector(UISelectors.statusFormDateInput).value;
+
+    if (statusFormDateValue !== '') {
+      // Reset Current High Peak status in data structure
+      HighPeakCtrl.resetCurrentHighPeakStatus();
+
+      // Update Total Completed in data structure
+      HighPeakCtrl.updateTotalCompleted();
+
+      // Update high peaks table
+      UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+
+      // Update UI complete totals
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
+
+      // Show success alert
+      UICtrl.showAlert(`${HighPeakCtrl.getCurrentHighPeak().name} has been succesfully reset`, 'alert-success');
+
+      // Clear Current High Peak State
+      HighPeakCtrl.clearCurrentHighPeakState();
+      
+      // Close status form
+      closeStatusForm();
+    } else {
+      // Show error alert
+      UICtrl.showAlert(`${HighPeakCtrl.getCurrentHighPeak().name} is already incomplete`, 'alert-error');
+    }
+  }
+
+  const closeStatusForm = function() {
+    // Clear Current High Peak State
+    HighPeakCtrl.clearCurrentHighPeakState();
+
+    // Hide status form
+    UICtrl.hideStatusForm();
+  }
+
+  const sortByName = function() {
+    aToZ = !aToZ;
+    HighPeakCtrl.sortHighPeaks('byName');
+    UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+  }
+
+  const sortByElevation = function() {
+    highToLow = !highToLow;
+    HighPeakCtrl.sortHighPeaks('byElevation');
+    UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+  }
+
+  const sortByDateCompleted = function() {
+    newToOld = !newToOld;
+    HighPeakCtrl.sortHighPeaks('byCompleted');
+    UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+  }
+
+  // Public Methods
+  return {
+    init: function() {
+      UICtrl.populateHighPeakList(HighPeakCtrl.getHighPeaks());
+      UICtrl.updateCompleteTotals(HighPeakCtrl.getTotalCompleted());
+      loadEventListeners();
+    }
+  }
+})(HighPeakCtrl, UICtrl);
+
+// Init App
+App.init();
