@@ -256,6 +256,8 @@ const UICtrl = (function() {
     },
 
     showAlert(message, className) {
+      this.clearAlert();
+
       // Create alert div
       const div = document.createElement('div');
       div.className = `alert ${className}`;
@@ -266,10 +268,17 @@ const UICtrl = (function() {
       const form = document.querySelector(UISelectors.statusFormContainer);
       container.insertBefore(div, form);
   
-      // Timeout alert div
-      setTimeout(function(){
-        document.querySelector(UISelectors.alertDiv).remove();
-      }, 3000);
+      setTimeout(() => {
+        this.clearAlert()
+      }, 3000)
+    },
+  
+    clearAlert() {
+      const currentAlert = document.querySelector(UISelectors.alertDiv);
+  
+      if (currentAlert) {
+        currentAlert.remove();
+      }
     },
 
     getSelectors: function() {
