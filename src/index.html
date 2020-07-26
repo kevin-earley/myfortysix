@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<script src="https://kit.fontawesome.com/818d89d46b.js" crossorigin="anonymous"></script>
+	<title>MyFortySix</title>
+</head>
+<body>
+	<header>
+		<div class="navbar">
+			<div class="navbar-content">
+				<h1>
+					<i class="fas fa-mountain"></i> MyFortySix
+				</h1>
+				<ul>
+					<li>Complete: <span class="complete-count">0</span></li>
+					<li>Incomplete: <span class="incomplete-count">0</span></li>
+				</ul>
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<section class="high-peaks-list">
+			<div class="row">
+				<div class="status-form" style="display: none">
+					<h2>
+						<span id="high-peak-name"></span>
+					</h2>
+					<form id="complete-form">
+						<input type="date" class="date"></input>
+						<div class="form-buttons">
+							<input type="submit" value="Complete" class="submit btn">
+							<input type="button" value="Reset" class="reset btn">
+							<input type="button" value="Cancel" class="cancel btn">
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<table class="list-table">
+					<thead>
+						<tr>
+							<th></th>
+							<th><span id="th-name">Name</span></th>
+							<th><span id="th-elevation">Elevation</span></th>
+							<th><span id="th-date-completed">Date Completed</span></th>
+						</tr>
+					</thead>
+					<tbody id="high-peaks-table-body"></tbody>
+				</table>		
+			</div>
+		</section>
+	</main>
+
+</body>
+</html>
