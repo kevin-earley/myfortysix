@@ -1,0 +1,15 @@
+@media (max-width: 1140px) {
+  header {
+    padding: 0 1.5rem;
+  }
+
+  .high-peaks-table {
+    border: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 57.5%;
+  }
+}

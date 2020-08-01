@@ -6,37 +6,19 @@
 <body>
 	<header>
 		<div class="navbar">
-			<div class="navbar-content">
-				<h1>
-					<i class="fas fa-mountain"></i> MyFortySix
-				</h1>
-				<ul>
-					<li>Complete: <span class="complete-count">0</span></li>
-					<li>Incomplete: <span class="incomplete-count">0</span></li>
-				</ul>
-			</div>
+			<h1>
+				<i class="fas fa-mountain"></i> MyFortySix
+			</h1>
+			<ul>
+				<li>Complete: <span class="complete-count">0</span></li>
+				<li>Incomplete: <span class="incomplete-count">0</span></li>
+			</ul>
 		</div>
 	</header>
-
 	<main>
-		<section class="high-peaks-list">
-			<div class="row">
-				<div class="status-form" style="display: none">
-					<h2>
-						<span id="high-peak-name"></span>
-					</h2>
-					<form id="complete-form">
-						<input type="date" class="date"></input>
-						<div class="form-buttons">
-							<input type="submit" value="Complete" class="submit btn">
-							<input type="button" value="Reset" class="reset btn">
-							<input type="button" value="Cancel" class="cancel btn">
-						</div>
-					</form>
-				</div>
-			</div>
-			<div class="row">
-				<table class="list-table">
+		<section>
+			<div class="container">
+				<table class="high-peaks-table">
 					<thead>
 						<tr>
 							<th></th>
@@ -45,11 +27,32 @@
 							<th><span id="th-date-completed">Date Completed</span></th>
 						</tr>
 					</thead>
-					<tbody id="high-peaks-table-body"></tbody>
+					<tbody class="high-peaks-table-body"></tbody>
 				</table>		
 			</div>
 		</section>
-	</main>
 
+		<section>
+			<div class="container" style="position: relative">
+				<div class="status-form" style="display: none">
+					<h2>
+						<i class="fas fa-mountain"></i> <span class="high-peak-name"></span>
+					</h2>
+					<h3 class="high-peak-elevation"></h3>
+					<form>
+						<input type="date" class="date"></input>
+						<div class="form-buttons">
+							<button type="submit" class="submit btn">Complete</button>
+							<button type="reset" class="reset btn">Reset</button>
+							<button type="button" class="cancel btn">Cancel</button>
+						</div>
+					</form>
+					<div class="alert-container">
+						<p class="alert-msg"></p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
 </body>
 </html>

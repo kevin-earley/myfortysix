@@ -1,7 +1,26 @@
-import { HighPeak } from "./high-peak";
+class HighPeak {
+  constructor(name, elevation) {
+    this.name = name;
+    this.elevation = elevation;
+    this.status = {
+      isCompleted: false,
+      dateCompleted: null
+    }
+  }
+
+  markComplete(date) {
+    this.status.isCompleted = true;
+    this.status.dateCompleted = date;
+  }
+  
+  markIncomplete() {
+    this.status.isCompleted = false;
+    this.status.dateCompleted = null;
+  }
+}
 
 export const HighPeaksCtrl = (function() {
-  // Data Structure / State
+  // Data structure / State
   const data = {
     highPeaks: [
       new HighPeak('Mount Marcy', 5344),
@@ -87,7 +106,7 @@ export const HighPeaksCtrl = (function() {
       })
     },
 
-    resetCurrentHighPeakStatus: function() {
+    clearCurrentHighPeakStatus: function() {
       data.highPeaks.forEach(function(highPeak) {
         if (highPeak.name === data.currentHighPeak.name) {
           highPeak.markIncomplete();
