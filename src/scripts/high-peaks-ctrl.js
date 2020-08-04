@@ -20,7 +20,7 @@ class HighPeak {
 }
 
 export const HighPeaksCtrl = (function() {
-  // Data structure / State
+  // data structure / state
   const data = {
     highPeaks: [
       new HighPeak('Mount Marcy', 5344),
@@ -74,14 +74,19 @@ export const HighPeaksCtrl = (function() {
     totalCompleted: 0
   }
 
+  // sort option variables
   const sortOptions = {
     aToZ: false,
     highToLow: false,
     newToOld: false
   }
 
-  // Public Methods
+  // public methods
   return {
+    getData: function() {
+      return data;
+    },
+    
     getHighPeaks: function() {
       return data.highPeaks;
     },
@@ -134,6 +139,10 @@ export const HighPeaksCtrl = (function() {
       switch(sortBy) {
         case 'byName':
           sortOptions.aToZ = !sortOptions.aToZ;
+
+          // set newToOld boolean to false so byCompleted will always start new to old
+          sortOptions.newToOld = false;
+
           data.highPeaks.sort(function(a, b) {
             if ( a.name < b.name ) {
               return (sortOptions.aToZ ? -1 : 1);
@@ -147,6 +156,10 @@ export const HighPeaksCtrl = (function() {
   
         case 'byElevation':
           sortOptions.highToLow = !sortOptions.highToLow;
+
+          // set newToOld boolean to false so byCompleted will always start new to old
+          sortOptions.newToOld = false;
+
           data.highPeaks.sort(function(a, b) {
             return (sortOptions.highToLow ? a.elevation - b.elevation : b.elevation - a.elevation);
           })
@@ -154,10 +167,10 @@ export const HighPeaksCtrl = (function() {
   
         case 'byCompleted':
           sortOptions.newToOld = !sortOptions.newToOld;
-          const highPeaksComplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted !== 'incomplete');
-          const highPeaksIncomplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted === 'incomplete');
+          const highPeaksComplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted !== null);
+          const highPeaksIncomplete = data.highPeaks.filter(highPeak => highPeak.status.dateCompleted === null);
     
-          // Do not change newToOld boolean if highPeaksComplete is empty
+          // do not change newToOld boolean if highPeaksComplete is empty
           if (highPeaksComplete.length === 0) {
             return sortOptions.newToOld = false;
           }
@@ -172,10 +185,6 @@ export const HighPeaksCtrl = (function() {
         default:
           break;
       }
-    },
-
-    getData: function() {
-      return data;
     }
   }
 })();

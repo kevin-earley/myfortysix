@@ -1,4 +1,5 @@
 export const UI = (function() {
+  // UI selectors
   const selectors = {
     completeCount: 'span.complete-count',
     incompleteCount: 'span.incomplete-count',
@@ -6,8 +7,8 @@ export const UI = (function() {
     sortByName: '#th-name',
     sortByElevation: '#th-elevation',
     sortByDateCompleted: '#th-date-completed',
-    mainContainer: 'main',
-    statusFormContainer: '.status-form',
+    statusFormModal: '.status-form-modal',
+    statusFormContainer: '.form-container',
     statusFormHighPeakName: '.high-peak-name',
     statusFormHighPeakElevation: '.high-peak-elevation',
     statusFormDateInput: '.date',
@@ -17,24 +18,30 @@ export const UI = (function() {
     alertMsg: '.alert-msg'
   }
 
-  // Public Methods
+  // public methods
   return {
+    getSelectors: function() {
+      return selectors;
+    },
+
     populateHighPeakList: function(highPeaks) {
       let html = '';
-      const completeIconClass = 'fas fa-check-circle complete',
-            incompleteIconClass = 'far fa-circle incomplete';
 
       highPeaks.forEach(function(highPeak) {
-        // Set icon class to complete or incomplete
-        let iconClass = highPeak.status.isCompleted ? completeIconClass : incompleteIconClass;
+        let iconClass;
+        let dateClass;
+        let formattedDate;
 
-        // Set date completed td class to complete or incomplete
-        let dateClass = highPeak.status.dateCompleted !== null ? 'complete' : 'incomplete';
-
-        // Format date completed if complete
-        let formattedDate = highPeak.status.dateCompleted !== null ?
-        `${('0' + (highPeak.status.dateCompleted.getMonth() + 1)).slice(-2)}.${('0' + highPeak.status.dateCompleted.getDate()).slice(-2)}.${highPeak.status.dateCompleted.getFullYear()}`
-        : 'incomplete';
+        // set dom classes and format date completed based on if highPeak isCompleted
+        if (highPeak.status.isCompleted) {
+          iconClass = 'fas fa-check-circle complete';
+          dateClass = 'complete';
+          formattedDate = `${('0' + (highPeak.status.dateCompleted.getMonth() + 1)).slice(-2)}.${('0' + highPeak.status.dateCompleted.getDate()).slice(-2)}.${highPeak.status.dateCompleted.getFullYear()}`;
+        } else {
+          iconClass = 'far fa-circle incomplete';
+          dateClass = 'incomplete';
+          formattedDate = 'incomplete';
+        }
 
         html += `
           <tr>
@@ -46,37 +53,42 @@ export const UI = (function() {
         `;
       });
 
-      // Insert high peaks table rows into table
+      // insert table rows into highPeaksTableBody
       document.querySelector(selectors.highPeaksTableBody).innerHTML = html;
     },
 
     showStatusForm: function(newCurrentHighPeak) {
+      document.querySelector(selectors.statusFormModal).style.display = 'block';
       document.querySelector(selectors.statusFormContainer).style.display = 'block';
       document.querySelector(selectors.statusFormHighPeakName).textContent = newCurrentHighPeak.name;
       document.querySelector(selectors.statusFormHighPeakElevation).textContent = `${newCurrentHighPeak.elevation}'`;
-      document.querySelector(selectors.statusFormDateInput).value = newCurrentHighPeak.status.dateCompleted !== null ?
-      newCurrentHighPeak.status.dateCompleted.toISOString().slice(0,10) : null;
 
-      document.querySelector(selectors.statusFormSubmitBtn).textContent = newCurrentHighPeak.status.dateCompleted === null ?
-        'Complete' : 'Update';
+      if (newCurrentHighPeak.status.isCompleted) {
+        document.querySelector(selectors.statusFormDateInput).value = newCurrentHighPeak.status.dateCompleted.toISOString().slice(0,10);
+        document.querySelector(selectors.statusFormSubmitBtn).textContent = 'Update';
+        document.querySelector(selectors.statusFormResetBtn).style.display = 'inline-block';
+      } else {
+        document.querySelector(selectors.statusFormDateInput).value = null;
+        document.querySelector(selectors.statusFormSubmitBtn).textContent = 'Complete';
+        document.querySelector(selectors.statusFormResetBtn).style.display = 'none';
+      }
 
-      document.querySelector(selectors.statusFormResetBtn).style.display = newCurrentHighPeak.status.dateCompleted !== null ?
-        'inline-block' : 'none';
-
+      // create transparentCover to place on top of dom and beneath statusFormModal
       const transparentCover = document.createElement('div');
       transparentCover.className = 'transparent-cover';
       document.querySelector('body').insertBefore(transparentCover, document.querySelector('header'))
     },
 
     hideStatusForm: function() {
-      document.querySelector(selectors.statusFormContainer).style.display = 'none';
+      document.querySelector(selectors.statusFormModal).style.display = 'none';
       document.querySelector(selectors.statusFormHighPeakName).textContent = '';
       document.querySelector(selectors.statusFormHighPeakElevation).textContent = '';
       document.querySelector(selectors.statusFormDateInput).value = null;
 
+      document.querySelector(selectors.alertMsg).textContent = '';
+      document.querySelector(selectors.alertMsg).classList.remove('success', 'error');
+
       document.querySelector('div.transparent-cover').remove();
-      
-      this.clearAlert();
     },
 
     updateCompleteTotals: function(totalCompleted) {
@@ -84,22 +96,27 @@ export const UI = (function() {
       document.querySelector(selectors.incompleteCount).textContent = 46 - totalCompleted;
     },
 
-    showAlert(message, className) {
-      this.clearAlert();
+    showAlert(message, alertType) {
+      if (alertType === 'error') {
+        document.querySelector(selectors.alertMsg).textContent = message;
+        document.querySelector(selectors.alertMsg).classList.add(alertType);
+        document.querySelector(selectors.alertMsg).classList.remove('success');
 
-      document.querySelector(selectors.alertMsg).textContent = message
-  
-      setTimeout(() => {
-        this.clearAlert()
-      }, 3000)
-    },
-  
-    clearAlert() {
-      document.querySelector(selectors.alertMsg).textContent = '';
-    },
+        setTimeout(() => {
+          document.querySelector('p.error').textContent = '';
+          document.querySelector(selectors.alertMsg).classList.remove('error');
+        }, 3000);
+      } else if (alertType === 'success') {
+        document.querySelector(selectors.statusFormContainer).style.display = 'none';
+        
+        document.querySelector(selectors.alertMsg).textContent = message
+        document.querySelector(selectors.alertMsg).classList.add(alertType);
+        document.querySelector(selectors.alertMsg).classList.remove('error');
 
-    getSelectors: function() {
-      return selectors;
+        setTimeout(() => {
+          this.hideStatusForm()
+        }, 3000);
+      }
     }
   }
 })();
