@@ -103,8 +103,10 @@ export const UI = (function() {
         document.querySelector(selectors.alertMsg).classList.remove('success');
 
         setTimeout(() => {
-          document.querySelector('p.error').textContent = '';
-          document.querySelector(selectors.alertMsg).classList.remove('error');
+          if (document.querySelector(selectors.alertMsg).classList.contains('error')) {
+            document.querySelector(selectors.alertMsg).textContent = '';
+            document.querySelector(selectors.alertMsg).classList.remove('error');
+          }
         }, 3000);
       } else if (alertType === 'success') {
         document.querySelector(selectors.statusFormContainer).style.display = 'none';

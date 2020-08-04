@@ -35,7 +35,7 @@ header {
   padding: 0 3rem;
   color: $light;
   background: $secondary;
-  border-bottom: $secondary-light 1px solid;
+  border-bottom: $secondary-light 2px solid;
 
   .navbar {
     display: flex;
@@ -80,7 +80,8 @@ header {
   margin: 10rem 0 3rem 0;
   color: $primary;
   background: $secondary;
-  border: $secondary-light 1px solid;
+  border: $secondary-light 2px solid;
+  border-width: solid;
   border-collapse: collapse;
 
   tr {

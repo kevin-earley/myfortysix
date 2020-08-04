@@ -4,12 +4,15 @@
   }
 
   .high-peaks-table {
-    border: 0;
+    border-top: $secondary-light 2px solid;
+    border-right: 0;
+    border-bottom: $secondary-light 2px solid;
+    border-left: 0;
   }
 }
 
-@media (max-width: 600px) {
-  html {
-    font-size: 57.5%;
+@media only screen and (max-device-width: 375px) {
+  html { 
+     font-size: 100%;
   }
 }
