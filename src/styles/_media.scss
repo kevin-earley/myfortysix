@@ -4,10 +4,11 @@
   }
 
   .high-peaks-table {
-    border-top: $secondary-light 2px solid;
+    border-top: $medium 1px solid;
     border-right: 0;
-    border-bottom: $secondary-light 2px solid;
+    border-bottom: $medium 1px solid;
     border-left: 0;
+    border-radius: 0;
   }
 }
 

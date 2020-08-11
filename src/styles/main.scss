@@ -12,7 +12,8 @@ html {
 
 body {
   font-family: $font-stack;
-  background: linear-gradient(to bottom right, rgba(88, 214, 140, 0.8), rgba(35, 155, 86, 0.6)), url(../images/greg-garnhart.jpg) no-repeat fixed center/cover;
+  background: linear-gradient(to bottom, rgba(97, 173, 94, 0.5), #2e7d32), url(../images/greg-garnhart.jpg) no-repeat fixed center/cover;
+  background-attachment: fixed;
 }
 
 .container {
@@ -34,8 +35,9 @@ header {
   height: 7rem;
   padding: 0 3rem;
   color: $light;
-  background: $secondary;
-  border-bottom: $secondary-light 2px solid;
+  background: $primary;
+  border-bottom: $primary-light 1px solid;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
 
   .navbar {
     display: flex;
@@ -49,7 +51,7 @@ header {
     h1 {
       font-size: 2.8rem;
       font-weight: 700;
-      color: $primary;
+      color: $light;
     }
 
     ul {
@@ -65,7 +67,7 @@ header {
         .incomplete-count {
           font-size: 1.8rem;
           font-weight: 700;
-          color: $primary;
+          color: $light
         }
       }
     }
@@ -78,19 +80,19 @@ header {
   width: 100%;
   max-width: 114rem;
   margin: 10rem 0 3rem 0;
-  color: $primary;
-  background: $secondary;
-  border: $secondary-light 2px solid;
-  border-width: solid;
-  border-collapse: collapse;
+  color: $dark;
+  background: $light;
+  border: $medium 1px solid;
+  border-radius: 0.6rem;
+  border-spacing: 0;
 
   tr {
     th {
       font-size: 1.2rem;
       font-weight: 300;
       text-align: left;
-      padding-top: 0.5rem;
-      color: $light;
+      padding: 0.8rem 0;
+      color: $dark;
   
       & span:hover {
         cursor: pointer;
@@ -110,7 +112,7 @@ header {
     }
 
     td {
-      border-bottom: $secondary-light 1px solid;
+      border-bottom: $medium 1px solid;
 
       &:nth-of-type(1) {
         font-size: 2.4rem;
@@ -123,20 +125,29 @@ header {
       }
     }
   }
+
+  & tbody > tr:last-child > td {
+    border-bottom: 0;
+  }
   
   .status-icon {
     &.complete {
       color: $primary;
       cursor: pointer;
+      transition: color .2s ease;
+
+      &:hover {
+        color: $primary-light;
+      }
     }
   
     &.incomplete {
-      color: $light;
+      color: $secondary;
       cursor: pointer;
       transition: color .2s ease;
   
       &:hover {
-        color: $primary;
+        color: $secondary-light;
       }
     }
   }
@@ -144,11 +155,9 @@ header {
   .date-completed {
     &.incomplete {
       font-weight: 300;
-      font-style: italic;
+      color: $dark;
     }
   }
-
-
 }
 
 /* Status Form */
@@ -159,8 +168,9 @@ header {
   text-align: center;
   width: 46rem;
   padding: 1.5rem;
-  background: $secondary;
-  border: $secondary-light 1px solid;
+  background: $light;
+  border: $medium 1px solid;
+  border-radius: 0.6rem;
   animation: fadein 0.4s;
 
   @keyframes fadein {
@@ -171,51 +181,54 @@ header {
   h2 {
     font-size: 2.4rem;
     color: $primary;
-    margin-bottom: -0.2rem;
+    margin-bottom: 0.4rem;
     padding: 0;
   }
 
   h3 {
     font-size: 1.8rem;
     font-weight: 400;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.0rem;
     padding: 0;
-    color: $primary;
+    color: $dark;
   }
 
   input[type=date] {
     font-family: $font-stack;
     font-size: 1.6rem;
-    width: 25rem;
+    width: 27.6rem;
     height: 4rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     padding: 1rem;
-    color: $secondary;
+    color: $dark;
     background: $light;
-    border: none;
+    border: $medium 1px solid;
+    border-radius: 0.6rem;
     outline: none;
   }
 
   .form-buttons {
     font-size: 0;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.4rem;
 
     button {
       font-family: $font-stack;
       font-size: 1.4rem;
       font-weight: 400;
-      width: 8rem;
+      width: 8.8rem;
       height: 4rem;
       margin: 0 0.25rem;
-      color: $secondary;
-      background: $primary;
+      padding-bottom: 0.4rem;
+      color: $light;
+      background: $secondary;
       border: none;
+      border-radius: 0.6rem;
       outline: none;
       cursor: pointer;
       transition: background .2s ease;
 
       &:hover {
-        background: $primary-light;
+        background: $secondary-light;
       }
     }
   }
@@ -223,10 +236,24 @@ header {
   .alert-container {
     font-size: 1.4rem;
     font-weight: 400;
-    font-style: italic;
+    margin-top: 0.4rem;
     height: 2.4rem;
-    color: $light;
+    color: $dark;
   }
+}
+
+/* Footer */
+footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  width: 100%;
+  height: 7rem;
+  padding: 0 3rem;
+  color: $light;
+  background: $primary;
 }
 
 .transparent-cover {
