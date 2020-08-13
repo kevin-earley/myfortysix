@@ -46,7 +46,7 @@ export const UI = (function() {
         html += `
           <tr>
             <td><i class="${iconClass} status-icon"></i></td>
-            <td>${highPeak.name}</td>
+            <td class="name">${highPeak.name}</td>
             <td>${highPeak.elevation}'</td>
             <td class="${dateClass} date-completed">${formattedDate}</td>
           </tr>

@@ -12,8 +12,14 @@
   }
 }
 
+@media (max-width: 550px) {
+  html {
+    font-size: 57.5%;
+  }
+}
+
 @media only screen and (max-device-width: 375px) {
   html { 
-     font-size: 100%;
+     font-size: 107.5%;
   }
 }
