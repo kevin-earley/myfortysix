@@ -106,7 +106,9 @@ export const HighPeaksCtrl = (function() {
     updateCurrentHighPeakStatus: function(date) {
       data.highPeaks.forEach(function(highPeak) {
         if (highPeak.name === data.currentHighPeak.name) {
-          highPeak.markComplete(new Date(`${date}T00:00:00`));
+          let dateString = `${date} 00:00:00`;
+          highPeak.markComplete( new Date(dateString.replace(/-/g, '/')) );
+          // highPeak.markComplete(new Date(`${date}T00:00:00`));
         }
       })
     },
