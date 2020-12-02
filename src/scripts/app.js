@@ -7,7 +7,8 @@ const App = (function(HighPeaksCtrl, UI) {
   const selectors = UI.getSelectors();
 
   const loadEventListeners = function() {
-    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', clickIconOrName);
+    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', clickIcon);
+    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', clickName);
     document.querySelector(selectors.statusFormSubmitBtn).addEventListener('click', submitStatusForm);
     document.querySelector(selectors.statusFormResetBtn).addEventListener('click', resetStatus);
     document.querySelector(selectors.statusFormCancelBtn).addEventListener('click', closeStatusForm);
@@ -16,24 +17,16 @@ const App = (function(HighPeaksCtrl, UI) {
     document.querySelector(selectors.sortByDateCompleted).addEventListener('click', sortByDateCompleted);
   }
 
-  const clickIconOrName = function(e) {
-    if ( (e.target.classList.contains('status-icon') || e.target.classList.contains('name')) && document.querySelector(selectors.statusFormModal).style.display === 'none' ) {
+  const clickIcon = function(e) {
+    if (e.target.classList.contains('status-icon') && document.querySelector(selectors.statusFormModal).style.display === 'none') {
       // create variable to store newCurrentHighPeak obj
       let newCurrentHighPeak;
 
-      if (e.target.classList.contains('status-icon')) {
-        HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
-          if (highPeak.name === e.target.parentElement.parentElement.children[1].textContent) {
-            return newCurrentHighPeak = highPeak;
-          }
-        })
-      } else if (e.target.classList.contains('name')) {
-        HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
-          if (highPeak.name === e.target.textContent) {
-            return newCurrentHighPeak = highPeak;
-          }
-        })
-      }
+      HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
+        if (highPeak.name === e.target.parentElement.parentElement.children[1].textContent) {
+          return newCurrentHighPeak = highPeak;
+        }
+      })
 
       // set currentHighPeak state to newCurrentHighPeak obj
       HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
@@ -41,6 +34,50 @@ const App = (function(HighPeaksCtrl, UI) {
       UI.showStatusForm(newCurrentHighPeak);
     }
   }
+
+  const clickName = function(e) {
+    if (e.target.classList.contains('name') && document.querySelector(selectors.statusFormModal).style.display === 'none' ) {
+      // create variable to store newCurrentHighPeak obj
+      let newCurrentHighPeak;
+
+      HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
+        if (highPeak.name === e.target.textContent) {
+          return newCurrentHighPeak = highPeak;
+        }
+      })
+
+      // set currentHighPeak state to newCurrentHighPeak obj
+      HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
+
+      UI.showStatusForm(newCurrentHighPeak);
+    }
+  }
+
+  // const clickIconOrName = function(e) {
+  //   if ( (e.target.classList.contains('status-icon') || e.target.classList.contains('name')) && document.querySelector(selectors.statusFormModal).style.display === 'none' ) {
+  //     // create variable to store newCurrentHighPeak obj
+  //     let newCurrentHighPeak;
+
+  //     if (e.target.classList.contains('status-icon')) {
+  //       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
+  //         if (highPeak.name === e.target.parentElement.parentElement.children[1].textContent) {
+  //           return newCurrentHighPeak = highPeak;
+  //         }
+  //       })
+  //     } else if (e.target.classList.contains('name')) {
+  //       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
+  //         if (highPeak.name === e.target.textContent) {
+  //           return newCurrentHighPeak = highPeak;
+  //         }
+  //       })
+  //     }
+
+  //     // set currentHighPeak state to newCurrentHighPeak obj
+  //     HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
+
+  //     UI.showStatusForm(newCurrentHighPeak);
+  //   }
+  // }
 
   const submitStatusForm = function(e) {
     let statusFormDateValue = document.querySelector(selectors.statusFormDateInput).value;
