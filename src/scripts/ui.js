@@ -91,6 +91,10 @@ export const UI = (function() {
       document.querySelector('div.transparent-cover').remove();
     },
 
+    isStatusFormHidden: function(e) {
+      return document.querySelector(selectors.statusFormModal).style.display = 'none' ? true : false;
+    },
+
     updateCompleteTotals: function(totalCompleted) {
       document.querySelector(selectors.completeCount).textContent = totalCompleted;
       document.querySelector(selectors.incompleteCount).textContent = 46 - totalCompleted;

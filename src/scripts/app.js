@@ -18,7 +18,7 @@ const App = (function(HighPeaksCtrl, UI) {
   }
 
   const clickIcon = function(e) {
-    if (e.target.classList.contains('status-icon') && document.querySelector(selectors.statusFormModal).style.display === 'none') {
+    if (e.target.classList.contains('status-icon') && UI.isStatusFormHidden() === true) {
       // create variable to store newCurrentHighPeak obj
       let newCurrentHighPeak;
 
@@ -36,7 +36,7 @@ const App = (function(HighPeaksCtrl, UI) {
   }
 
   const clickName = function(e) {
-    if (e.target.classList.contains('name') && document.querySelector(selectors.statusFormModal).style.display === 'none' ) {
+    if (e.target.classList.contains('name') && UI.isStatusFormHidden() === true) {
       // create variable to store newCurrentHighPeak obj
       let newCurrentHighPeak;
 
