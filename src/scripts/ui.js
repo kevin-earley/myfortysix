@@ -1,5 +1,4 @@
 export const UI = (function() {
-  // UI selectors
   const selectors = {
     completeCount: 'span.complete-count',
     incompleteCount: 'span.incomplete-count',
@@ -18,7 +17,6 @@ export const UI = (function() {
     alertMsg: '.alert-msg'
   }
 
-  // public methods
   return {
     getSelectors: function() {
       return selectors;
@@ -91,7 +89,7 @@ export const UI = (function() {
       document.querySelector('div.transparent-cover').remove();
     },
 
-    isStatusFormHidden: function(e) {
+    isStatusFormHidden: function() {
       return document.querySelector(selectors.statusFormModal).style.display = 'none' ? true : false;
     },
 

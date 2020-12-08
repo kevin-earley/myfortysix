@@ -20,7 +20,6 @@ class HighPeak {
 }
 
 export const HighPeaksCtrl = (function() {
-  // data structure / state
   const data = {
     highPeaks: [
       new HighPeak('Mount Marcy', 5344),
@@ -74,14 +73,12 @@ export const HighPeaksCtrl = (function() {
     totalCompleted: 0
   }
 
-  // sort option variables
   const sortOptions = {
     aToZ: false,
     highToLow: false,
     newToOld: false
   }
 
-  // public methods
   return {
     getData: function() {
       return data;
@@ -108,7 +105,6 @@ export const HighPeaksCtrl = (function() {
         if (highPeak.name === data.currentHighPeak.name) {
           let dateString = `${date} 00:00:00`;
           highPeak.markComplete( new Date(dateString.replace(/-/g, '/')) );
-          // highPeak.markComplete(new Date(`${date}T00:00:00`));
         }
       })
     },

@@ -7,19 +7,18 @@ const App = (function(HighPeaksCtrl, UI) {
   const selectors = UI.getSelectors();
 
   const loadEventListeners = function() {
-    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', clickIcon);
-    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', clickName);
-    document.querySelector(selectors.statusFormSubmitBtn).addEventListener('click', submitStatusForm);
-    document.querySelector(selectors.statusFormResetBtn).addEventListener('click', resetStatus);
-    document.querySelector(selectors.statusFormCancelBtn).addEventListener('click', closeStatusForm);
-    document.querySelector(selectors.sortByName).addEventListener('click', sortByName);
-    document.querySelector(selectors.sortByElevation).addEventListener('click', sortByElevation);
-    document.querySelector(selectors.sortByDateCompleted).addEventListener('click', sortByDateCompleted);
+    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', handleIconClick);
+    document.querySelector(selectors.highPeaksTableBody).addEventListener('click', handleNameClick);
+    document.querySelector(selectors.statusFormSubmitBtn).addEventListener('click', handleStatusFormSubmit);
+    document.querySelector(selectors.statusFormResetBtn).addEventListener('click', handleStatusReset);
+    document.querySelector(selectors.statusFormCancelBtn).addEventListener('click', handleStatusFormClose);
+    document.querySelector(selectors.sortByName).addEventListener('click', handleSortByName);
+    document.querySelector(selectors.sortByElevation).addEventListener('click', handleSortByElevation);
+    document.querySelector(selectors.sortByDateCompleted).addEventListener('click', handleSortByDateCompleted);
   }
 
-  const clickIcon = function(e) {
+  const handleIconClick = function(e) {
     if (e.target.classList.contains('status-icon') && UI.isStatusFormHidden() === true) {
-      // create variable to store newCurrentHighPeak obj
       let newCurrentHighPeak;
 
       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
@@ -28,16 +27,14 @@ const App = (function(HighPeaksCtrl, UI) {
         }
       })
 
-      // set currentHighPeak state to newCurrentHighPeak obj
       HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
 
       UI.showStatusForm(newCurrentHighPeak);
     }
   }
 
-  const clickName = function(e) {
+  const handleNameClick = function(e) {
     if (e.target.classList.contains('name') && UI.isStatusFormHidden() === true) {
-      // create variable to store newCurrentHighPeak obj
       let newCurrentHighPeak;
 
       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
@@ -46,40 +43,13 @@ const App = (function(HighPeaksCtrl, UI) {
         }
       })
 
-      // set currentHighPeak state to newCurrentHighPeak obj
       HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
 
       UI.showStatusForm(newCurrentHighPeak);
     }
   }
 
-  // const clickIconOrName = function(e) {
-  //   if ( (e.target.classList.contains('status-icon') || e.target.classList.contains('name')) && document.querySelector(selectors.statusFormModal).style.display === 'none' ) {
-  //     // create variable to store newCurrentHighPeak obj
-  //     let newCurrentHighPeak;
-
-  //     if (e.target.classList.contains('status-icon')) {
-  //       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
-  //         if (highPeak.name === e.target.parentElement.parentElement.children[1].textContent) {
-  //           return newCurrentHighPeak = highPeak;
-  //         }
-  //       })
-  //     } else if (e.target.classList.contains('name')) {
-  //       HighPeaksCtrl.getHighPeaks().forEach(function(highPeak) {
-  //         if (highPeak.name === e.target.textContent) {
-  //           return newCurrentHighPeak = highPeak;
-  //         }
-  //       })
-  //     }
-
-  //     // set currentHighPeak state to newCurrentHighPeak obj
-  //     HighPeaksCtrl.updateCurrentHighPeakState(newCurrentHighPeak);
-
-  //     UI.showStatusForm(newCurrentHighPeak);
-  //   }
-  // }
-
-  const submitStatusForm = function(e) {
+  const handleStatusFormSubmit = function(e) {
     let statusFormDateValue = document.querySelector(selectors.statusFormDateInput).value;
 
     // create variable to store currentIsCompletedDate if currentHighPeak isCompleted
@@ -126,7 +96,7 @@ const App = (function(HighPeaksCtrl, UI) {
     e.preventDefault();
   }
 
-  const resetStatus = function(e) {
+  const handleStatusReset = function(e) {
     let statusFormDateValue = document.querySelector(selectors.statusFormDateInput).value;
 
     if (statusFormDateValue !== '') {
@@ -152,35 +122,26 @@ const App = (function(HighPeaksCtrl, UI) {
     e.preventDefault();
   }
 
-  const closeStatusForm = function() {
-    // clear currentHighPeak value in data structure
+  const handleStatusFormClose = function() {
     HighPeaksCtrl.clearCurrentHighPeakState();
-
     UI.hideStatusForm();
   }
 
-  const sortByName = function() {
+  const handleSortByName = function() {
     HighPeaksCtrl.sortHighPeaks('byName');
-
-    // update highPeaksTable in ui after sort
     UI.populateHighPeakList(HighPeaksCtrl.getHighPeaks());
   }
 
-  const sortByElevation = function() {
+  const handleSortByElevation = function() {
     HighPeaksCtrl.sortHighPeaks('byElevation');
-
-    // update highPeaksTable in ui after sort
     UI.populateHighPeakList(HighPeaksCtrl.getHighPeaks());
   }
 
-  const sortByDateCompleted = function() {
+  const handleSortByDateCompleted = function() {
     HighPeaksCtrl.sortHighPeaks('byCompleted');
-
-    // update highPeaksTable in ui after sort
     UI.populateHighPeakList(HighPeaksCtrl.getHighPeaks());
   }
 
-  // public methods
   return {
     init: function() {
       UI.populateHighPeakList(HighPeaksCtrl.getHighPeaks());
@@ -190,5 +151,4 @@ const App = (function(HighPeaksCtrl, UI) {
   }
 })(HighPeaksCtrl, UI);
 
-// init App
 App.init();
