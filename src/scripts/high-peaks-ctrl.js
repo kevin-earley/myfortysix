@@ -1,4 +1,4 @@
-class HighPeak {
+export class HighPeak {
   constructor(name, elevation) {
     this.name = name;
     this.elevation = elevation;
