@@ -65,3 +65,13 @@ describe('getData', () => {
     });
   });
 });
+
+describe('getHighPeaks', () => {
+  test('the getHighPeaks function exists', () => {
+    expect(HighPeaksCtrl.getHighPeaks).toBeDefined();
+  });
+
+  test('the getHighPeaks function returns an array of 46 items/peaks', () => {
+    expect(HighPeaksCtrl.getHighPeaks().length).toBe(46);
+  });
+});
